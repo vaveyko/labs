@@ -1,0 +1,43 @@
+Program Task2Block1;
+
+Uses
+    System.SysUtils;
+
+Const
+    MINVALUE = 2;
+    MAXVALUE = 15;
+
+Var
+    CountNum, I: Integer;
+    MultipliedNum: Int64;
+    IsCorrect: Boolean;
+
+Begin
+    CountNum := 0;
+    MultipliedNum := 2;
+    Writeln('Эта программа считает произведение 2*4*6*...*2n для заданного n');
+    Writeln('Число n должно быть от ', MINVALUE, ' и до ', MAXVALUE);
+    Repeat
+        IsCorrect := True;
+        Writeln('Введите число');
+        Try
+            Readln(CountNum);
+        Except
+            Writeln('Неправильные входные данные');
+            IsCorrect := False;
+        End;
+        If IsCorrect And ((CountNum < MINVALUE) Or (CountNum > MAXVALUE)) Then
+        Begin
+            Writeln('Число n должно находиться в промежутке [', MINVALUE, ', ', MAXVALUE, ']');
+            IsCorrect := False;
+        End
+    Until IsCorrect;
+    Write(MultipliedNum);
+    For I := MINVALUE To CountNum Do
+    Begin
+        Write(' * ', 2 * I);
+        MultipliedNum := MultipliedNum * 2 * I;
+    End;
+    Writeln(' = ', MultipliedNum);
+    Readln;
+End.

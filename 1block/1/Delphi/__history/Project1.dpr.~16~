@@ -1,0 +1,50 @@
+Program Task1Block1;
+
+Uses
+    System.SysUtils;
+
+Var
+    FirstSide, SecondSide, ThirdSide: Integer;
+    IsTriangleExist: Boolean;
+
+Begin
+    IsTriangleExist := True;
+    Writeln('Программа определяет: является ли треугольник с данными сторонами равнобедренным.');
+    Writeln('Длинна стороны - целое, положительное число.');
+    Repeat
+    Begin
+        IsTriangleExist := True;
+        Try
+            Writeln('Введите 3 стороны треугольника через пробел');
+            Readln(FirstSide, SecondSide, ThirdSide);
+        Except
+            Writeln('Неправильные входные данные');
+            IsTriangleExist := False;
+        End;
+        If (FirstSide > 0) And (SecondSide > 0) And (ThirdSide > 0) And IsTriangleExist Then
+        Begin
+            If ((FirstSide + SecondSide) > ThirdSide) And
+              ((SecondSide + ThirdSide) > FirstSide) And
+              ((ThirdSide + FirstSide) > SecondSide) Then
+            Else
+            Begin
+                Writeln('Треугольника с такими сторонами не существует(');
+                IsTriangleExist := False;
+            End;
+        End
+        Else
+        Begin
+            if IsTriangleExist then
+                Writeln('Сторона треугольника не может быть меньше либо равной нулю.');
+            IsTriangleExist := False;
+        End;
+    End;
+    Until IsTriangleExist;
+    If (FirstSide = SecondSide) Or (FirstSide = ThirdSide) Or
+      (SecondSide = ThirdSide) Then
+        Writeln('Треугольник равнобедренный')
+    Else
+        Writeln('Треугольник не равнобедренный');
+    Readln;
+
+End.
