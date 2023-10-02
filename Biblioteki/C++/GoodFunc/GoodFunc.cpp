@@ -29,14 +29,27 @@ bool thisIsTxtFile(string fileName)
     return ((lastFourChar == ".txt") ? true : false);
 }
 
-string** getLineOfFile(int numbOfLine, int numbOfElem, ifstream file) {
-    string** arrOfInf = new string*[numbOfLine];
+string** getLineOfFile(int numbOfLine, int numbOfElem, ifstream& file)
+{
     string line;
+
+    //creating array for information
+    string** arrOfInf = new string*[numbOfLine];
     for (int i = 0; i < numbOfLine; i++)
     {
-        string* arrOfInf = new string[numbOfElem];
+        arrOfInf[i] = new string[numbOfElem];
     }
 
+    //reading from a file
+    for (int i = 0; i < numbOfElem; i++)
+    {
+        for (int j = 0; j < numbOfLine; j++)
+        {
+            (file >> line) ? arrOfInf[i][j] = line : arrOfInf[i][j] = "ERR";
+            cout << arrOfInf[i][j];
+        }
+        cout << '\n';
+    }
     return arrOfInf;
 }
 
@@ -58,10 +71,7 @@ int main()
             cout << 1 <<"\n";
             ifstream file(nameOfFile);
             string line;
-            while (getline(file, line, ' '))
-            {
-                cout << line << "\n";
-            }
+            getLineOfFile(3, 3, file);
         }
         else
         {
