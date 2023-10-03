@@ -31,7 +31,6 @@ int main()
         }
         if (!isIncorrect && cin.get() != '\n')
         {
-            cout << "Error\n";
             while (cin.get() != '\n');
             isIncorrect = true;
         }
@@ -90,7 +89,7 @@ int main()
         {
             maxIntersection = intersection;
             indexOfSection = i;
-        }
+    }
     }
 
     //output
