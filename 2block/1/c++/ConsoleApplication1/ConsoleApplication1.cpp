@@ -1,32 +1,37 @@
 ﻿#include <iostream>
 
-using std::ifstream;
-using std::ofstream;
 using std::cout;
 using std::cin;
 
 int main()
 {
     setlocale(0, "");
-    int count, intersection, indexOfSection, maxIntersection;
+    int countElem, indexOfNeededElem;
+    int maxValue, minValue;
+    float absDistanse, minAbsDistanse, average, sum;
     bool isIncorrect;
-    maxIntersection = 0;
-    indexOfSection = 0;
-    intersection = 0;
+    maxValue = INT_MAX;
+    minValue = INT_MIN;
+    sum = 0;
+    countElem = 0;
+    indexOfNeededElem = 0;
+    average = 0;
+    absDistanse = 0;
 
-    cout << "Программа принимает координаты отрезков на числовой прямой и "
-         << "выводит отрезок с наибольшим количеством пересечений\n";
+    cout << "Программа принимает числовую последовательность и"
+         << "выводит элемент наиболее \nблизкий по своему значению "
+         << "к среднему арифметическому последовательности\n";
 
     do
     {
         isIncorrect = false;
-        cout << "Введите количество отрезков\n";
-        cin >> count;
-        if (cin.fail() || count <= 0)
+        cout << "Введите количество элементов\n";
+        cin >> countElem;
+        if (cin.fail() || countElem < 1)
         {
             cin.clear();
             while (cin.get() != '\n');
-            cout << "Error\n";
+            cout << "Неверные входные данные\n";
             isIncorrect = true;
         }
         if (!isIncorrect && cin.get() != '\n')
@@ -35,66 +40,61 @@ int main()
             isIncorrect = true;
         }
     } while (isIncorrect);
+    maxValue = (maxValue / countElem) - 1;
+    minValue = -maxValue;
 
     //creating array for information
-    int** arrOfInf = new int* [count];
-    for (int i = 0; i < count; i++)
-    {
-        arrOfInf[i] = new int[2];
-    }
+    int* arrOfInf = new int[countElem];
 
     //filling the array
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < countElem; i++)
     {
-        cout << "введите две координаты границ " << i+1 << "-го отрезка x1 и x2 через пробел или Enter\n";
+        cout << "введите " << i + 1 << " элемент последовательности\n";
         do
         {
             isIncorrect = false;
-            cin >> arrOfInf[i][0];
-            cin >> arrOfInf[i][1];
+            cin >> arrOfInf[i];
             if (cin.fail())
             {
                 isIncorrect = true;
-                cout << "Error\n";
+                cout << "Неверные входные данные\n";
                 cin.clear();
                 while (cin.get() != '\n');
             }
             if (!isIncorrect && cin.get() != '\n')
             {
                 isIncorrect = true;
-                cout << "Error\n";
+                cout << "Неверные входные данные\n";
                 cin.clear();
                 while (cin.get() != '\n');
+            }
+            else if (arrOfInf[i] > maxValue or arrOfInf[i] < -maxValue)
+            {
+                isIncorrect = true;
+                cout << "Из-за количества элементов они должны находиться"
+                    << " в промежутке от " << maxValue << " до " << maxValue << '\n';
             }
         } while (isIncorrect);
     }
 
     //algorithm
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < countElem; i++)
     {
-        intersection = 0;
-        for (int j = 0; j < count; j++)
-        {
-            if (i == j || (arrOfInf[j][0] > arrOfInf[i][1]) || (arrOfInf[j][1] < arrOfInf[i][0]))
-            {
-                
-            }
-            else
-            {
-                intersection++;
-            }
-                
-        }
-        if (intersection > maxIntersection)
-        {
-            maxIntersection = intersection;
-            indexOfSection = i;
+        sum += arrOfInf[i];
     }
+    average = sum / countElem;
+    minAbsDistanse = average;
+    for (int i = 0; i < countElem; i++)
+    {
+        absDistanse = abs(average - arrOfInf[i]);
+        if (absDistanse < minAbsDistanse)
+        {
+            minAbsDistanse = absDistanse;
+            indexOfNeededElem = i;
+        }
     }
 
-    //output
-    cout << "Наибольшее количество пересечений имеет " << indexOfSection + 1 <<
-        "-ый отрезок -- " << maxIntersection << "\n";
-    cout << "Координаты  отрезка " << arrOfInf[indexOfSection][0] << ", "
-         << arrOfInf[indexOfSection][1];
+    cout << "Среднее арифметическое -- " << average
+         << "\nБлижайший элемент -- " << arrOfInf[indexOfNeededElem];
+    delete[] arrOfInf;
 }
