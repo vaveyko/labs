@@ -1,0 +1,39 @@
+Program Project2;
+
+uses
+  System.SysUtils;
+
+Const
+    MAXCOUNT = 1000;
+
+Var
+    CountElem, IndexOfNeededElem, MaxValue, MinValue: Integer;
+    AbsDistanse, MinAbsDistanse, Average, Sum: Real;
+    IsCorrect: Boolean;
+
+Begin
+    MaxValue := MaxInt;
+    MinValue := -MaxInt;
+    Sum := 0;
+    CountElem := 0;
+    IndexOfNeededElem := 0;
+    Average := 0;
+    AbsDistanse := 0;
+    Writeln('Программа принимает числовую последовательность и выводит элемент наиболее \nблизкий по своему значению к среднему арифметическому последовательности');
+    Repeat
+        IsCorrect := True;
+        Writeln('Введите количество элементов');
+        Try
+            Readln(CountElem);
+        Except
+            Writeln('Неверные входные данные');
+            IsCorrect := False;
+        End;
+        if IsCorrect And ((CountElem < 1) Or (CountElem > MAXCOUNT)) then
+        Begin
+            IsCorrect := False;
+            Writeln('Количество элементов должно быть больше 0 и меньше ', MAXCOUNT);
+        End;
+    Until (IsCorrect);
+    readln;
+End.

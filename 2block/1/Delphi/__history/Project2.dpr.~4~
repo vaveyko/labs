@@ -1,0 +1,89 @@
+Program Project2;
+
+Uses
+    System.SysUtils;
+
+Const
+    MAXCOUNT = 1000;
+
+Var
+    ArrOfInf: Array Of Integer;
+    I, CountElem, IndexOfNeededElem, MaxValue, MinValue: Integer;
+    AbsDistanse, MinAbsDistanse, Average, Sum: Real;
+    IsCorrect: Boolean;
+
+Begin
+    MaxValue := MaxInt;
+    MinValue := -MaxInt;
+    Sum := 0;
+    CountElem := 0;
+    IndexOfNeededElem := 0;
+    Average := 0;
+    AbsDistanse := 0;
+    Writeln('Программа принимает числовую последовательность и выводит ',
+      'элемент наиболее \nблизкий по своему значению к среднему ',
+      'арифметическому последовательности');
+    Repeat
+        IsCorrect := True;
+        Writeln('Введите количество элементов');
+        Try
+            Readln(CountElem);
+        Except
+            Writeln('Неверные входные данные');
+            IsCorrect := False;
+        End;
+        If IsCorrect And ((CountElem < 1) Or (CountElem > MAXCOUNT)) Then
+        Begin
+            IsCorrect := False;
+            Writeln('Количество элементов должно быть больше 0 и меньше ',
+              MAXCOUNT);
+        End;
+    Until (IsCorrect);
+    MinValue := MinValue Div CountElem;
+    MaxValue := MaxValue Div CountElem;
+
+    // creating array for information
+    SetLength(ArrOfInf, CountElem);
+
+    // filling the array
+    For I := 0 To High(ArrOfInf) Do
+    Begin
+        Repeat
+            IsCorrect := True;
+            Writeln('Введите ', i + 1, ' элемент последовательности');
+            Try
+                Readln(ArrOfInf[I]);
+            Except
+                Writeln('Неверные входные данные');
+                IsCorrect := False;
+            End;
+            If IsCorrect And ((ArrOfInf[I] < MinValue) Or
+              (ArrOfInf[I] > MaxValue)) Then
+            Begin
+                IsCorrect := False;
+                Writeln('Из-за количества элементов они должны находиться ',
+                  'в промежутке от ', MinValue, ' до ', MaxValue);
+            End;
+        Until IsCorrect;
+    End;
+
+    // algorithm
+    For I := 0 To High(ArrOFInf) Do
+        Sum := Sum + ArrOfInf[I];
+    Average := Sum / CountElem;
+    MinAbsDistanse := Average;
+    For I := 0 To High(ArrOFInf) Do
+    Begin
+        AbsDistanse := Abs(Average - ArrOfInf[I]);
+        If AbsDistanse < MinAbsDistanse then
+        Begin
+            MinAbsDistanse := AbsDistanse;
+            IndexOfNeededElem := I;
+        End;
+    End;
+
+    //output
+    Writeln('Среднее арифметическое -- ', average);
+    Writeln('Ближайший элемент -- ', arrOfInf[indexOfNeededElem]);
+    Readln;
+End.
