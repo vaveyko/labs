@@ -42,7 +42,7 @@ int main()
             cout << "Неверные входные данные\n";
             isIncorrect = true;
         }
-        if (!isIncorrect && (countElem < 1 || countElem >MAXCOUNT))
+        if (!isIncorrect && (countElem < 1 || countElem > MAXCOUNT))
         {
             isIncorrect = true;
             cout << "Количество элементов должно быть меньше " << MAXCOUNT <<"\n";
@@ -76,7 +76,7 @@ int main()
                 cin.clear();
                 while (cin.get() != '\n');
             }
-            else if (arrOfInf[i] > maxValue or arrOfInf[i] < minValue)
+            else if (arrOfInf[i] > maxValue || arrOfInf[i] < minValue)
             {
                 isIncorrect = true;
                 cout << "Из-за количества элементов они должны находиться"
