@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <iomanip>
 
 using std::cout;
 using std::cin;
@@ -6,6 +7,7 @@ using std::cin;
 int main()
 {
     setlocale(0, "");
+    const int MAXCOUNT = 1000;
     int countElem, indexOfNeededElem;
     int maxValue, minValue;
     float absDistanse, minAbsDistanse, average, sum;
@@ -27,7 +29,7 @@ int main()
         isIncorrect = false;
         cout << "Введите количество элементов\n";
         cin >> countElem;
-        if (cin.fail() || countElem < 1)
+        if (cin.fail())
         {
             cin.clear();
             while (cin.get() != '\n');
@@ -37,7 +39,13 @@ int main()
         if (!isIncorrect && cin.get() != '\n')
         {
             while (cin.get() != '\n');
+            cout << "Неверные входные данные\n";
             isIncorrect = true;
+        }
+        if (!isIncorrect && (countElem < 1 || countElem >MAXCOUNT))
+        {
+            isIncorrect = true;
+            cout << "Количество элементов должно быть меньше " << MAXCOUNT <<"\n";
         }
     } while (isIncorrect);
     maxValue = (maxValue / countElem) - 1;
@@ -68,11 +76,11 @@ int main()
                 cin.clear();
                 while (cin.get() != '\n');
             }
-            else if (arrOfInf[i] > maxValue or arrOfInf[i] < -maxValue)
+            else if (arrOfInf[i] > maxValue or arrOfInf[i] < minValue)
             {
                 isIncorrect = true;
                 cout << "Из-за количества элементов они должны находиться"
-                    << " в промежутке от " << maxValue << " до " << maxValue << '\n';
+                    << " в промежутке от " << minValue << " до " << maxValue << '\n';
             }
         } while (isIncorrect);
     }
