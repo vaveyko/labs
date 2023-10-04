@@ -1,9 +1,5 @@
 Program Project2;
 
-{$APPTYPE CONSOLE}
-
-{$R *.res}
-
 Uses
     System.SysUtils;
 
