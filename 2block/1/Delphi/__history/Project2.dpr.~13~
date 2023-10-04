@@ -1,5 +1,9 @@
 Program Project2;
 
+{$APPTYPE CONSOLE}
+
+{$R *.res}
+
 Uses
     System.SysUtils;
 
@@ -21,8 +25,8 @@ Begin
     Average := 0;
     AbsDistanse := 0;
     Writeln('Программа принимает числовую последовательность и выводит ',
-      'элемент наиболее \nблизкий по своему значению к среднему ',
-      'арифметическому последовательности');
+            'элемент наиболее ', #10#13, 'близкий по своему значению к среднему ',
+            'арифметическому последовательности');
     Repeat
         IsCorrect := True;
         Writeln('Введите количество элементов');
@@ -50,19 +54,18 @@ Begin
     Begin
         Repeat
             IsCorrect := True;
-            Writeln('Введите " << i + 1 << " элемент последовательности');
+            Writeln('Введите ', i + 1, ' элемент последовательности');
             Try
                 Readln(ArrOfInf[I]);
             Except
                 Writeln('Неверные входные данные');
                 IsCorrect := False;
             End;
-            If IsCorrect And ((ArrOfInf[I] < MinValue) Or
-              (ArrOfInf[I] > MaxValue)) Then
+            If IsCorrect And ((ArrOfInf[I] < MinValue) Or (ArrOfInf[I] > MaxValue)) Then
             Begin
                 IsCorrect := False;
                 Writeln('Из-за количества элементов они должны находиться ',
-                  'в промежутке от ', MinValue, ' до ', MaxValue);
+                        'в промежутке от ', MinValue, ' до ', MaxValue);
             End;
         Until IsCorrect;
     End;
@@ -71,7 +74,7 @@ Begin
     For I := 0 To High(ArrOFInf) Do
         Sum := Sum + ArrOfInf[I];
     Average := Sum / CountElem;
-    MinAbsDistanse := Average;
+    MinAbsDistanse := Abs(Average - ArrOfInf[0]);
     For I := 0 To High(ArrOFInf) Do
     Begin
         AbsDistanse := Abs(Average - ArrOfInf[I]);
@@ -83,7 +86,7 @@ Begin
     End;
 
     //output
-    Writeln('Среднее арифметическое -- ', average);
+    Writeln('Среднее арифметическое -- ', average:7:4);
     Writeln('Ближайший элемент -- ', arrOfInf[indexOfNeededElem]);
     Readln;
 End.

@@ -1,8 +1,6 @@
 Program Project2;
 
-{$APPTYPE CONSOLE}
-
-{$R *.res}
+{$CODEPAGE UTF8}
 
 Uses
     System.SysUtils;
