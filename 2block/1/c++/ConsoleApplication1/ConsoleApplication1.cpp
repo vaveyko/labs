@@ -45,7 +45,7 @@ int main()
         if (!isIncorrect && (countElem < 1 || countElem > MAXCOUNT))
         {
             isIncorrect = true;
-            cout << "Количество элементов должно быть меньше " << MAXCOUNT <<"\n";
+            cout << "Количество элементов должно быть больше 0 и меньше " << MAXCOUNT <<"\n";
         }
     } while (isIncorrect);
     maxValue = (maxValue / countElem) - 1;
@@ -57,7 +57,7 @@ int main()
     //filling the array
     for (int i = 0; i < countElem; i++)
     {
-        cout << "введите " << i + 1 << " элемент последовательности\n";
+        cout << "Введите " << i + 1 << " элемент последовательности\n";
         do
         {
             isIncorrect = false;
@@ -91,7 +91,7 @@ int main()
         sum += arrOfInf[i];
     }
     average = sum / countElem;
-    minAbsDistanse = average;
+    minAbsDistanse = abs(average - arrOfInf[0]);
     for (int i = 0; i < countElem; i++)
     {
         absDistanse = abs(average - arrOfInf[i]);
