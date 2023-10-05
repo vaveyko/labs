@@ -1,7 +1,5 @@
 Program Project2;
 
-{$CODEPAGE UTF8}
-
 Uses
     System.SysUtils;
 
@@ -52,14 +50,14 @@ Begin
     Begin
         Repeat
             IsCorrect := True;
-            Writeln('Введите ', i + 1, ' элемент последовательности');
+            Writeln('Введите ', I + 1, ' элемент последовательности');
             Try
                 Readln(ArrOfInf[I]);
             Except
                 Writeln('Неверные входные данные');
                 IsCorrect := False;
             End;
-            If IsCorrect And ((ArrOfInf[I] < MinValue) Or (ArrOfInf[I] > MaxValue)) Then
+            If IsCorrect And ((ArrOfInf[I] < MinValue) Or(ArrOfInf[I] > MaxValue)) Then
             Begin
                 IsCorrect := False;
                 Writeln('Из-за количества элементов они должны находиться ',
@@ -76,15 +74,16 @@ Begin
     For I := 0 To High(ArrOFInf) Do
     Begin
         AbsDistanse := Abs(Average - ArrOfInf[I]);
-        If AbsDistanse < MinAbsDistanse then
+        If AbsDistanse < MinAbsDistanse Then
         Begin
             MinAbsDistanse := AbsDistanse;
             IndexOfNeededElem := I;
         End;
     End;
 
-    //output
-    Writeln('Среднее арифметическое -- ', average:7:4);
-    Writeln('Ближайший элемент -- ', arrOfInf[indexOfNeededElem]);
+    // output
+    Writeln('Среднее арифметическое -- ', Average:7:4);
+    Writeln('Ближайший элемент -- ', ArrOfInf[IndexOfNeededElem]);
     Readln;
+
 End.
