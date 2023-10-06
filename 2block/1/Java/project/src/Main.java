@@ -26,11 +26,11 @@ public class Main {
                 countElem = Integer.parseInt(input.nextLine());
             } catch (NumberFormatException e) {
                 isIncorrect = true;
-                System.out.print("Неверные входные данные\n");
+                System.err.print("Неверные входные данные\n");
             }
             if (!isIncorrect && (countElem < 1 || countElem >MAXCOUNT)) {
                 isIncorrect = true;
-                System.out.print("Количество элементов должно быть больше 0 и меньше " + MAXCOUNT + "\n");
+                System.err.print("Количество элементов должно быть больше 0 и меньше " + MAXCOUNT + "\n");
             }
         } while (isIncorrect);
         maxValue = (maxValue / countElem) - 1;
@@ -48,11 +48,11 @@ public class Main {
                     arrOfInf[i] = Integer.parseInt(input.nextLine());
                 } catch (NumberFormatException e) {
                     isIncorrect = true;
-                    System.out.print("Неверные входные данные\n");
+                    System.err.print("Неверные входные данные\n");
                 }
                 if (!isIncorrect && (arrOfInf[i] > maxValue || arrOfInf[i] < minValue)) {
                     isIncorrect = true;
-                    System.out.print("Из-за количества элементов они должны находиться"
+                    System.err.print("Из-за количества элементов они должны находиться"
                                      + " в промежутке от " + minValue + " до " + maxValue + '\n');
                 }
             } while (isIncorrect);
