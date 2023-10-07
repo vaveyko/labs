@@ -104,4 +104,5 @@ int main()
     cout << "Среднее арифметическое -- " << average
          << "\nБлижайший элемент -- " << arrOfInf[indexOfNeededElem];
     delete[] arrOfInf;
+    return 0;
 }

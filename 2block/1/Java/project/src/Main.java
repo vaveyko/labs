@@ -16,21 +16,21 @@ public class Main {
         average = 0;
         absDistanse = 0;
 
-        System.out.print("Программа принимает числовую последовательность и"
+        System.out.println("Программа принимает числовую последовательность и"
                          + "выводит элемент наиболее \nблизкий по своему значению "
-                         + "к среднему арифметическому последовательности\n");
+                         + "к среднему арифметическому последовательности");
         do {
             isIncorrect = false;
-            System.out.print("Введите количество элементов\n");
+            System.out.println("Введите количество элементов");
             try {
                 countElem = Integer.parseInt(input.nextLine());
             } catch (NumberFormatException e) {
                 isIncorrect = true;
-                System.err.print("Неверные входные данные\n");
+                System.err.println("Неверные входные данные");
             }
             if (!isIncorrect && (countElem < 1 || countElem >MAXCOUNT)) {
                 isIncorrect = true;
-                System.err.print("Количество элементов должно быть больше 0 и меньше " + MAXCOUNT + "\n");
+                System.err.println("Количество элементов должно быть больше 0 и меньше " + MAXCOUNT);
             }
         } while (isIncorrect);
         maxValue = (maxValue / countElem) - 1;
@@ -41,19 +41,19 @@ public class Main {
 
         //filling the array
         for (int i = 0; i < countElem; i++) {
-            System.out.print("Введите " + (i + 1) + " элемент последовательности\n");
+            System.out.println("Введите " + (i + 1) + " элемент последовательности");
             do {
                 isIncorrect = false;
                 try {
                     arrOfInf[i] = Integer.parseInt(input.nextLine());
                 } catch (NumberFormatException e) {
                     isIncorrect = true;
-                    System.err.print("Неверные входные данные\n");
+                    System.err.println("Неверные входные данные");
                 }
                 if (!isIncorrect && (arrOfInf[i] > maxValue || arrOfInf[i] < minValue)) {
                     isIncorrect = true;
-                    System.err.print("Из-за количества элементов они должны находиться"
-                                     + " в промежутке от " + minValue + " до " + maxValue + '\n');
+                    System.err.println("Из-за количества элементов они должны находиться"
+                                     + " в промежутке от " + minValue + " до " + maxValue);
                 }
             } while (isIncorrect);
         }
@@ -73,7 +73,7 @@ public class Main {
             }
         }
 
-        System.out.print("Среднее арифметическое -- " + average + "\nБлижайший элемент -- "
+        System.out.println("Среднее арифметическое -- " + average + "\nБлижайший элемент -- "
                          + arrOfInf[indexOfNeededElem]);
     }
 }
