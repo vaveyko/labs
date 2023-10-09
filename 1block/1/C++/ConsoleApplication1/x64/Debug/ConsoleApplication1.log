@@ -1,3 +1,0 @@
-﻿D:\Programs\Visual Studio\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: промежуточный каталог (x64\Debug\) содержит файлы, которые используются совместно с другим проектом (ConsoleApplication1.vcxproj).  Это может привести к ошибкам очистки и перестроения.
-  ConsoleApplication1.cpp
-  ConsoleApplication1.vcxproj -> D:\Универ\ОАиП\1 блок\1\C++\ConsoleApplication1\x64\Debug\Treangle.exe

@@ -57,6 +57,9 @@
 # C++ object files produced when C/C++ Output file generation is configured.
 # Uncomment this if you are not using external objects (zlib library for example).
 #*.obj
+*.sln
+*.vcxproj
+*.vcxproj.filters
 
 # Delphi compiler-generated binaries (safe to delete)
 *.bpl
@@ -83,6 +86,9 @@
 *.tvsconfig
 *.dsk
 
+*.dproj
+*.res
+
 # Delphi history and backups
 __history/
 __recovery/
@@ -103,6 +109,12 @@ modules/
 
 # BlueJ files
 *.ctxt
+
+
+*.iml
+*.gitignore
+*.idea
+
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -514,6 +526,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio

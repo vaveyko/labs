@@ -1,4 +1,0 @@
-﻿  laba2_1.cpp
-D:\Uni\labs\2block\2\laba2_1\laba2_1.cpp(10,24): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-D:\Uni\labs\2block\2\laba2_1\laba2_1.cpp(23): warning C4715: isNumSimple: значение возвращается не при всех путях выполнения
-  laba2_1.vcxproj -> D:\Uni\labs\2block\2\laba2_1\x64\Debug\laba2_1.exe
