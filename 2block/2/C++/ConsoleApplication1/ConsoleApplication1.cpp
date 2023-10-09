@@ -6,22 +6,37 @@ using std::cin;
 //(Простое число называется числом Мерсена,
 //если оно может быть представлено в виде 2р – 1, где р – тоже простое число.
 
-void printArr(int* arrNumb, int numElem)
-{
-	for (int i = 0; i < numElem; i++)
-		cout << arrNumb[i] << "  ";
-}
+const unsigned int MAX_VALUE = 3000000000;
 
-//TODO add array of simple numbers in this function
-void arrMersen(int highBorder)
+unsigned int parseInt()
 {
-	int mersenNum;
-	mersenNum = 0;
-	for (int i = 0; mersenNum < highBorder; i++)
+	unsigned int number;
+	bool isIncorrect;
+	do
 	{
-		mersenNum = pow(2, i) - 1;
-		cout << "Mersen(" << "";
-	}
+		isIncorrect = false;
+		cin >> number;
+		if (cin.fail())
+		{
+			cin.clear();
+			cout << "Error\n";
+			while (cin.get() != '\n');
+			isIncorrect = true;
+		}
+		if (!isIncorrect && cin.get() != '\n')
+		{
+			cin.clear();
+			cout << "Error, enter only a number\n";
+			while (cin.get() != '\n');
+			isIncorrect = true;
+		}
+		if (!isIncorrect && number > MAX_VALUE)
+		{
+			cout << "Error, number must be smaller then " << MAX_VALUE << '\n';
+			isIncorrect = true;
+		}
+	} while (isIncorrect);
+	return number;
 }
 
 bool isNumSimple(int numb)
@@ -43,46 +58,27 @@ bool isNumSimple(int numb)
 	return true;
 }
 
-int countSimp(int numb)
+void mersenNum(unsigned int highBorder)
 {
-	int count;
-	count = 0;
-	++numb;
-	for (int i = 1; i < numb; i++)
-		if (isNumSimple(i))
-			count++;
-	return count;
-}
-
-int* fillSimpArr(int numb)
-{
-	int count;
-	int* arrSimpNumb = new int[countSimp(numb)];
-	count = 0;
-	++numb;
-	for (int i = 1; i < numb; i++)
-		if (isNumSimple(i))
-		{
-			arrSimpNumb[count++] = i;
-			cout << i << ' ';
-		}
-	return arrSimpNumb;
+	bool isBordIncros;
+	int mersenNum, i;
+	mersenNum = 1;
+	i = 2;
+	isBordIncros = true;
+	while (isBordIncros)
+	{
+		mersenNum = mersenNum * 2 +1;
+		isBordIncros = mersenNum < highBorder;
+		if (isBordIncros && isNumSimple(i) && (isNumSimple(mersenNum)))
+			cout << "Mersen(" << i << ") -- " << mersenNum << '\n';
+		i++;
+	} 
 }
 
 int main()
 {
-
-	int numbElem;
-	int* arrOfSimp = new int;
-	arrOfSimp = fillSimpArr(31);
-	printArr(arrOfSimp, countSimp(31));
-
-
-	/*cout << isNumSimple(20);
-	cout << isNumSimple(1);
-	cout << isNumSimple(2);
-	cout << isNumSimple(3);
-	cout << isNumSimple(4);
-	cout << isNumSimple(5);
-	cout << isNumSimple(6);*/
+	unsigned int highBorder;
+	highBorder = parseInt();
+	mersenNum(highBorder);
+	return 0;
 }
