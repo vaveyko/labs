@@ -4,8 +4,15 @@ using std::cin;
 
 
 const unsigned int MAX_VALUE = 3000000000;
+const int MIN_VALUE = 1;
 
-unsigned int parseInt()
+void printInf()
+{
+	cout << "Программа вычисляет все числа Марсена меньше n, где n [" << MIN_VALUE << ", " << MAX_VALUE << "]\n";
+	cout << "Число Мерсена -- простое число, которое можно представить в виде 2^р – 1, где р – тоже простое число.\n";
+}
+
+unsigned int inputNum()
 {
 	unsigned int number;
 	bool isIncorrect;
@@ -16,20 +23,20 @@ unsigned int parseInt()
 		if (cin.fail())
 		{
 			cin.clear();
-			cout << "Error\n";
+			cout << "Ошибка, введите только число\n";
 			while (cin.get() != '\n');
 			isIncorrect = true;
 		}
 		if (!isIncorrect && cin.get() != '\n')
 		{
 			cin.clear();
-			cout << "Error, enter only a number\n";
+			cout << "Ошибка, введите только число\n";
 			while (cin.get() != '\n');
 			isIncorrect = true;
 		}
-		if (!isIncorrect && number > MAX_VALUE)
+		if (!isIncorrect && (number > MAX_VALUE || number < MIN_VALUE))
 		{
-			cout << "Error, number must be smaller then " << MAX_VALUE << '\n';
+			cout << "Ошибка, число должно быть больше " << MIN_VALUE << " и меньше " << MAX_VALUE << '\n';
 			isIncorrect = true;
 		}
 	} while (isIncorrect);
@@ -55,7 +62,7 @@ bool isNumSimple(int numb)
 	return true;
 }
 
-void mersenNum(unsigned int highBorder)
+void printMersNum(unsigned int highBorder)
 {
 	bool isBordIncros;
 	int mersenNum, i;
@@ -74,8 +81,8 @@ void mersenNum(unsigned int highBorder)
 
 int main()
 {
-	unsigned int highBorder;
-	highBorder = parseInt();
-	mersenNum(highBorder);
+	setlocale(0, "");
+	printInf();
+	printMersNum(inputNum());
 	return 0;
 }
