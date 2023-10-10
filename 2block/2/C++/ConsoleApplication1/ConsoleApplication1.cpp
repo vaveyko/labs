@@ -46,19 +46,11 @@ unsigned int inputNum()
 bool isNumSimple(int numb)
 {
 	float numbSqrt;
-	bool isNumSimp;
-	isNumSimp = false;
 	numbSqrt = sqrt(numb) + 1;
-	if (numb < 4)
-	{
-		isNumSimp = true;
-	}
-	else
+	if (numb > 3)
 		for (int i = 2; i < numbSqrt; i++)
-		{
 			if (numb % i == 0)
 				return false;
-		}
 	return true;
 }
 
@@ -71,9 +63,9 @@ void printMersNum(unsigned int highBorder)
 	isBordIncros = true;
 	while (isBordIncros)
 	{
-		mersenNum = mersenNum * 2 +1;
+		mersenNum = mersenNum * 2 + 1;
 		isBordIncros = mersenNum < highBorder;
-		if (isBordIncros && isNumSimple(i) && (isNumSimple(mersenNum)))
+		if (isBordIncros && isNumSimple(i) && isNumSimple(mersenNum))
 			cout << "Mersen(" << i << ") -- " << mersenNum << '\n';
 		i++;
 	} 
