@@ -72,9 +72,12 @@ Begin
     End;
 End;
 
+Var
+    HighBorder: FixedUInt;
+
 Begin
     PrintInf;
-    PrintMersNum(InputNum());
+    HighBorder := InputNum();
+    PrintMersNum(HighBorder);
     Readln;
-
 End.

@@ -63,7 +63,9 @@ public class Main {
     public static void main(String[] args) {
         final int MIN_VALUE = 1;
         final long MAX_VALUE = 3000000000L;
+        long highBorder;
         printInf(MIN_VALUE, MAX_VALUE);
-        printMersen(inputNum(MIN_VALUE, MAX_VALUE));
+        highBorder = inputNum(MIN_VALUE, MAX_VALUE);
+        printMersen(highBorder);
     }
 }

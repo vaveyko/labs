@@ -68,13 +68,15 @@ void printMersNum(unsigned int highBorder)
 		if (isBordIncros && isNumSimple(i) && isNumSimple(mersenNum))
 			cout << "Mersen(" << i << ") -- " << mersenNum << '\n';
 		i++;
-	} 
+	}
 }
 
 int main()
 {
 	setlocale(0, "");
+	unsigned int hihgBorder;
 	printInf();
-	printMersNum(inputNum());
+	hihgBorder = inputNum();
+	printMersNum(hihgBorder);
 	return 0;
 }
