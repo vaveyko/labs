@@ -1,4 +1,3 @@
-import java.math.BigInteger;
 import java.util.Scanner;
 
 public class Main {
@@ -30,7 +29,7 @@ public class Main {
         return number;
     }
 
-    static boolean isNumSympl(long numb) {
+    static boolean isNumSimpl(long numb) {
         int sqrtNum;
         sqrtNum = (int) Math.sqrt(numb) + 1;
         if (numb > 3) {
@@ -40,6 +39,7 @@ public class Main {
                 }
             }
         }
+
         return true;
     }
 
@@ -53,7 +53,7 @@ public class Main {
         while (isBordIncros) {
             mersenNum = mersenNum * 2 + 1;
             isBordIncros = mersenNum < highBord;
-            if (isBordIncros && isNumSympl(i) && isNumSympl(mersenNum)) {
+            if (isBordIncros && isNumSimpl(i) && isNumSimpl(mersenNum)) {
                 System.out.println("Mersen(" + i + ") -- " + mersenNum);
             }
             i++;
