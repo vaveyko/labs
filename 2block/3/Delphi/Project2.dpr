@@ -7,6 +7,11 @@ Type
     OneSizeArr = Array Of Integer;
     TwoSizeArr = Array Of OneSizeArr;
 
+Procedure PrintInf();
+Begin
+    Writeln('Program sort even rows of square matrix from larger to smaller');
+End;
+
 Function SortArr(Arr: OneSizeArr): OneSizeArr;
 Var
     I, Bufer: Integer;
@@ -17,7 +22,6 @@ Begin
     Begin
         IsNotSort := False;
         For I := 1 To High(Arr) Do
-        Begin
             If Arr[I - 1] < Arr[I] Then
             Begin
                 IsNotSort := True;
@@ -25,7 +29,6 @@ Begin
                 Arr[I] := Arr[I - 1];
                 Arr[I - 1] := Bufer;
             End;
-        End;
     End;
     SortArr := Arr;
 End;
@@ -114,7 +117,7 @@ Begin
         Writeln('Size is not correct');
         IsCorrect := False;
     End;
-    if (Size < MinSize) Or (Size > MaxSize) then
+    if IsCorrect And ((Size < MinSize) Or (Size > MaxSize)) then
     Begin
         Writeln('Size of array should be from ', MinSize, ' to ', MaxSize);
         IsCorrect := False;
@@ -133,12 +136,12 @@ Begin
         Writeln('data in file not enough');
         IsCorrect := False;
     End
-    Else
+    Else If IsCorrect then
     Begin
         Read(InfFile, Buffer);
         If Eof(InfFile) Then
             Writeln('Reading is successful')
-        Else If IsCorrect Then
+        Else
         Begin
             Writeln('Data is to a lot');
             IsCorrect := False;
@@ -211,6 +214,7 @@ Var
     FileName: String;
 
 Begin
+    PrintInf;
     Writeln('Choose a way of input/output of data', #13#10,
             '1 -- Console', #13#10,
             '2 -- File');
