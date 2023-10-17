@@ -108,7 +108,7 @@ Var
 Begin
     IsCorrect := True;
     Size := 0;
-    Assign(InfFile, Name);
+    AssignFile(InfFile, Name);
     Reset(InfFile);
 
     Try
@@ -161,7 +161,7 @@ Var
     OutFile: TextFile;
     I, J: Integer;
 Begin
-    Assign(OutFile, Name);
+    AssignFile(OutFile, Name);
     Rewrite(OutFile);
     Writeln(OutFile, 'Defolt array');
     For I := 0 To High(DefoltArr) Do
