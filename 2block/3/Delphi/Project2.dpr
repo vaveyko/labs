@@ -90,26 +90,27 @@ Function SortEvenRow(Arr: TwoSizeArr; Row: Integer): TwoSizeArr;
 Var
     I: Integer;
 Begin
-    I := 1;
-    While (I < Row) Do
+    if High(Arr) > 0 then
     Begin
-        Arr[I] := SortArr(Arr[I]);
-        Inc(I, 2);
-    End;
-    SortEvenRow := Arr;
+        I := 1;
+        While (I < Row) Do
+        Begin
+            Arr[I] := SortArr(Arr[I]);
+            Inc(I, 2);
+        End;
+        SortEvenRow := Arr;
+    End
+    Else
+        SortEvenRow := Arr;
 End;
 
-Function ReadValidFileInf(Name: String; Var Size: Integer; MinSize, MaxSize: Integer): TwoSizeArr;
+Function ReadSizeFile(MinSize, MaxSize: Integer; Var InfFile: TextFile)
+  : Integer;
 Var
-    InfFile: TextFile;
     IsCorrect: Boolean;
-    I, J, Buffer: Integer;
-    Arr: TwoSizeArr;
+    Size: Integer;
 Begin
-    IsCorrect := True;
     Size := 0;
-    AssignFile(InfFile, Name);
-    Reset(InfFile);
 
     Try
         Read(InfFile, Size);
@@ -117,38 +118,91 @@ Begin
         Writeln('Size is not correct');
         IsCorrect := False;
     End;
-    if IsCorrect And ((Size < MinSize) Or (Size > MaxSize)) then
+    If IsCorrect And ((Size < MinSize) Or (Size > MaxSize)) Then
     Begin
         Writeln('Size of array should be from ', MinSize, ' to ', MaxSize);
         IsCorrect := False;
         Size := 0;
     End;
-    SetLength(Arr, Size);
-    For I := 0 To High(Arr) Do
-        SetLength(Arr[I], Size);
+    ReadSizeFile := Size;
+End;
 
-    For I := 0 To High(Arr) Do
-        For J := 0 To High(Arr[I]) Do
-            Read(InfFile, Arr[I][J]);
+Function IsFileCorrect(Var InfFile: TextFile): Boolean;
+Var
+    IsCanReset: Boolean;
+Begin
+    IsCanReset := True;
+    Try
+        Try
+            Reset(InfFile);
+        Finally
+            Close(InfFile);
+        End;
+    Except
+        IsCanReset := False;
+        Writeln('File is can not be opened');
+    End;
+    IsFileCorrect := IsCanReset;
+End;
 
-    If Eof(InfFile) Then
+Function IsFileTxt(Name: String): Boolean;
+Begin
+    If Copy(Name, Length(Name) - 3, Length(Name)) = '.txt' Then
+        IsFileTxt := True
+    Else
     Begin
-        Writeln('data in file not enough');
-        IsCorrect := False;
-    End
-    Else If IsCorrect then
+        Writeln('File is not .txt');
+        IsFileTxt := False;
+    End;
+
+End;
+
+Function IsFileOk(FileName: String): Boolean;
+Var
+    MyFile: TextFile;
+Begin
+    AssignFile(MyFile, FileName);
+    If Not FileExists(FileName) Then
+        Writeln('File is not exist');
+    IsFileOk := IsFileTxt(FileName) And FileExists(FileName) And
+      IsFileCorrect(MyFile);
+
+End;
+
+Function ReadValidFileInf(Name: String; Var Size: Integer;
+  MinSize, MaxSize: Integer): TwoSizeArr;
+Var
+    InfFile: TextFile;
+    IsCorrect: Boolean;
+    I, J, Buffer: Integer;
+    Arr: TwoSizeArr;
+Begin
+    IsCorrect := True;
+    AssignFile(InfFile, Name);
+    If IsFileOk(Name) Then
     Begin
-        Read(InfFile, Buffer);
+        Reset(InfFile);
+
+        Size := ReadSizeFile(MinSize, MaxSize, InfFile);
+        SetLength(Arr, Size, Size);
+        For I := 0 To High(Arr) Do
+            For J := 0 To High(Arr[I]) Do
+                Read(InfFile, Arr[I][J]);
+
         If Eof(InfFile) Then
+        Begin
             Writeln('Reading is successful')
+        End
         Else
         Begin
-            Writeln('Data is to a lot');
+            Writeln('Data is to a lot, or just remove whitespace at the end of file');
             IsCorrect := False;
         End;
 
-    End;
-    CloseFile(InfFile);
+        CloseFile(InfFile);
+    End
+    Else
+        IsCorrect := False;
     If IsCorrect Then
         ReadValidFileInf := Arr
     Else
@@ -182,11 +236,6 @@ Begin
     Writeln('Writing is successfull');
 End;
 
-Function IsFileTxt(Name: String): Boolean;
-Begin
-    IsFileTxt := Copy(Name, Length(Name)-3, Length(Name)) = '.txt'
-End;
-
 Function MakeCopy(DefoltArr: TwoSizeArr): TwoSizeArr;
 Var
     CopyArr: TwoSizeArr;
@@ -202,11 +251,65 @@ Begin
     MakeCopy := CopyArr;
 End;
 
+Function ButtonInf(): Integer;
+Var
+    Button: Integer;
+Begin
+    Writeln('Choose a way of input/output of data', #13#10, '1 -- Console',
+      #13#10, '2 -- File');
+    Button := InpValidNum(1, 2);
+    ButtonInf := Button;
+End;
+
+Function InputInf(Butt: Integer; Var Size: Integer; Var Name: String)
+  : TwoSizeArr;
 Const
     MAX_SIZE = 100;
     MIN_SIZE = 2;
     MIN_ELEM = -MaxInt - 1;
     MAX_ELEM = MaxInt;
+Var
+    Arr: TwoSizeArr;
+Begin
+    If (Butt = 1) Then
+    Begin
+        Writeln('Enter size of array, please');
+        Size := InpValidNum(MIN_SIZE, MAX_SIZE);
+        Writeln('Now enter the elements');
+        Arr := EnterArr(Size, Size, MIN_ELEM, MAX_ELEM);
+    End
+    Else
+    Begin
+        Writeln('Please enter the full path to file');
+        Readln(Name);
+
+        If IsFileOk(Name) Then
+            Arr := ReadValidFileInf(Name, Size, MIN_SIZE, MAX_SIZE);
+    End;
+    InputInf := Arr;
+End;
+
+Procedure OutputInf(DefoltArr, SortedArr: TwoSizeArr; Size, Butt: Integer;
+  Name: String);
+Begin
+    If Butt = 1 Then
+    Begin
+        Writeln('Defolt Array');
+        PrintArr(DefoltArr, Size, Size);
+        Writeln('Sorted Array');
+        SortedArr := SortEvenRow(DefoltArr, Size);
+        PrintArr(SortedArr, Size, Size);
+    End
+    Else
+    Begin
+        If Length(DefoltArr) > 1 Then
+        Begin
+            SortedArr := MakeCopy(DefoltArr);
+            SortedArr := SortEvenRow(SortedArr, Size);
+            WriteInfFile(Name, DefoltArr, SortedArr, Size);
+        End;
+    End;
+End;
 
 Var
     Size, Button, I, J: Integer;
@@ -215,40 +318,11 @@ Var
 
 Begin
     PrintInf;
-    Writeln('Choose a way of input/output of data', #13#10,
-            '1 -- Console', #13#10,
-            '2 -- File');
-    Button := InpValidNum(1, 2);
-    If (Button = 1) Then
-    Begin
-        Writeln('Enter size of array, please');
-        Size := InpValidNum(MIN_SIZE, MAX_SIZE);
-        Writeln('Now enter the elements');
-        ArrOfNum := EnterArr(Size, Size, MIN_ELEM, MAX_ELEM);
-        Writeln('Defolt Array');
-        PrintArr(ArrOfNum, Size, Size);
-        Writeln('Sorted Array');
-        SortedArr := SortEvenRow(ArrOfNum, Size);
-        PrintArr(SortedArr, Size, Size);
-    End
-    Else
-    Begin
-        Writeln('Please enter the full path to file');
-        Readln(FileName);
-        if IsFileTxt(FileName) And FileExists(FileName) then
-        Begin
-            ArrOfNum := ReadValidFileInf(FileName, Size, MIN_SIZE, MAX_SIZE);
-            If Length(ArrOfNum) > 1 Then
-            Begin
-                SortedArr := MakeCopy(ArrOfNum);
-                SortedArr := SortEvenRow(SortedArr, Size);
-                WriteInfFile(FIleName, ArrOfNum, SortedArr, Size);
-            End;
-        End
-        Else
-            Writeln('There is no such file or file is not ".txt"');
-    End;
+    Button := ButtonInf();
+    ArrOfNum := InputInf(Button, Size, FileName);
+    SortedArr := MakeCopy(ArrOfNum);
+    SortedArr := SortEvenRow(SortedArr, Size);
+    OutputInf(ArrOfNum, SortedArr, Size, Button, FileName);
 
     Readln;
-
 End.
