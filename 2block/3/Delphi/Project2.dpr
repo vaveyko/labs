@@ -270,6 +270,7 @@ Const
     MAX_ELEM = MaxInt;
 Var
     Arr: TwoSizeArr;
+    IsCorrect: Boolean;
 Begin
     If (Butt = 1) Then
     Begin
@@ -280,11 +281,16 @@ Begin
     End
     Else
     Begin
-        Writeln('Please enter the full path to file');
-        Readln(Name);
+        Repeat
+            IsCorrect := True;
+            Writeln('Please enter the full path to file');
+            Readln(Name);
 
-        If IsFileOk(Name) Then
-            Arr := ReadValidFileInf(Name, Size, MIN_SIZE, MAX_SIZE);
+            If IsFileOk(Name) Then
+                Arr := ReadValidFileInf(Name, Size, MIN_SIZE, MAX_SIZE)
+            Else
+                IsCorrect := False;
+        Until IsCorrect;
     End;
     InputInf := Arr;
 End;
