@@ -90,7 +90,7 @@ Function SortEvenRow(Arr: TwoSizeArr; Row: Integer): TwoSizeArr;
 Var
     I: Integer;
 Begin
-    if High(Arr) > 0 then
+    If High(Arr) > 0 Then
     Begin
         I := 1;
         While (I < Row) Do
@@ -116,6 +116,7 @@ Begin
         Read(InfFile, Size);
     Except
         Writeln('Size is not correct');
+        Size := 0;
         IsCorrect := False;
     End;
     If IsCorrect And ((Size < MinSize) Or (Size > MaxSize)) Then
@@ -169,11 +170,34 @@ Begin
 
 End;
 
+Procedure ChekFileAfterReading(Var IsCorrect: Boolean; Var MyFile: TextFile; IsElemIncorrect: Boolean);
+Begin
+    if IsElemIncorrect then
+    Begin
+        Writeln('One of the element is incorrect');
+        IsCorrect := False;
+    End
+    Else If Eof(MyFile) And IsCorrect Then
+    Begin
+        Writeln('Reading is successfull')
+    End
+    Else If IsCorrect Then
+    Begin
+        Writeln('Count of element is too a lot');
+        IsCorrect := False;
+    End
+    Else
+    Begin
+        Writeln('Count of element is not enough');
+        IsCorrect := False;
+    End;
+End;
+
 Function ReadValidFileInf(Name: String; Var Size: Integer;
   MinSize, MaxSize: Integer): TwoSizeArr;
 Var
     InfFile: TextFile;
-    IsCorrect: Boolean;
+    IsCorrect, IsElemIncorrect: Boolean;
     I, J, Buffer: Integer;
     Arr: TwoSizeArr;
 Begin
@@ -184,21 +208,25 @@ Begin
         Reset(InfFile);
 
         Size := ReadSizeFile(MinSize, MaxSize, InfFile);
+        IsCorrect := Size > 1;
+        IsElemIncorrect := False;
         SetLength(Arr, Size, Size);
         For I := 0 To High(Arr) Do
             For J := 0 To High(Arr[I]) Do
-                Read(InfFile, Arr[I][J]);
+            Begin
+                If Eof(InfFile) Then
+                    IsCorrect := False
+                Else
+                Begin
+                    Try
+                        Read(InfFile, Arr[I][J]);
+                    Except
+                        IsElemIncorrect := True;
+                    End;
+                End;
+            End;
 
-        If Eof(InfFile) Then
-        Begin
-            Writeln('Reading is successful')
-        End
-        Else
-        Begin
-            Writeln('Data is to a lot, or just remove whitespace at the end of file');
-            IsCorrect := False;
-        End;
-
+        ChekFileAfterReading(IsCorrect, InfFile, IsElemIncorrect);
         CloseFile(InfFile);
     End
     Else
@@ -327,4 +355,5 @@ Begin
     OutputInf(ArrOfNum, SortedArr, Size, Button, FileName);
 
     Readln;
+
 End.
