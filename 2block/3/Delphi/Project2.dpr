@@ -309,11 +309,7 @@ Begin
     Else
     Begin
         If Length(DefoltArr) > 1 Then
-        Begin
-            SortedArr := MakeCopy(DefoltArr);
-            SortedArr := SortEvenRow(SortedArr, Size);
             WriteInfFile(Name, DefoltArr, SortedArr, Size);
-        End;
     End;
 End;
 
