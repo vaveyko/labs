@@ -100,7 +100,6 @@ void sortArr(int* arr, int size)
 void sortEvenRow(int** arr, int row, int col)
 {
 	int i;
-	i = 1;
 	for (i = 1; i < row; i += 2)
 	{
 		sortArr(arr[i], col);
@@ -139,7 +138,7 @@ bool thisIsTxtFile(string fileName)
 	}
 }
 
-bool isFileCanBeOpened(string nameOfFile)
+bool isFileExist(string nameOfFile)
 {
 	ifstream file(nameOfFile);
 	if (file.is_open())
@@ -153,13 +152,6 @@ bool isFileCanBeOpened(string nameOfFile)
 		file.close();
 		return false;
 	}
-}
-
-int readOneElem(ifstream file)
-{
-	int elem;
-	file >> elem;
-	return elem;
 }
 
 int readSize(ifstream& file, const int MIN, const int MAX)
@@ -191,12 +183,12 @@ int readSize(ifstream& file, const int MIN, const int MAX)
 	return size;
 }
 
-void chekFileAfterReading(int& size, bool& isCorrect, ifstream& file, bool& isElemIncorrect)
+void chekEnyException(int& size, bool isCorrect, ifstream& file, bool isElemIncorrect, const int MIN, const int MAX)
 {
 	if (isElemIncorrect)
 	{
 		size = 0;
-		cout << "One of the element is incorrect";
+		cout << "One of the element is incorrect or out of range [ " << MIN << ", " << MAX << " ]";
 	}
 	else if (file.eof() && isCorrect)
 		cout << "Reading is successfull\n";
@@ -212,7 +204,7 @@ void chekFileAfterReading(int& size, bool& isCorrect, ifstream& file, bool& isEl
 	}
 }
 
-int** readFile(int& size, string name, const int MIN_SIZE, const int MAX_SIZE)
+int** readFile(int& size, string name, const int MIN_SIZE, const int MAX_SIZE, const int MIN_ELEM, const int MAX_ELEM)
 {
 	int i, j;
 	bool isCorrect, isElemIncorrect;
@@ -237,10 +229,12 @@ int** readFile(int& size, string name, const int MIN_SIZE, const int MAX_SIZE)
 				file >> arr[i][j];
 				if (file.fail())
 					isElemIncorrect = true;
+				else if (arr[i][j] < MIN_ELEM || arr[i][j] > MAX_ELEM)
+					isElemIncorrect = true;
 			}
 		}
 	}
-	chekFileAfterReading(size, isCorrect, file, isElemIncorrect);
+	chekEnyException(size, isCorrect, file, isElemIncorrect, MIN_ELEM, MAX_ELEM);
 
 	file.close();
 		return arr;
@@ -274,7 +268,7 @@ void writeFile(int** defoltArr, int** sortedArr, int size, string name)
 
 bool isFileOk(string name)
 {
-	return isFileCanBeOpened(name) && thisIsTxtFile(name);
+	return isFileExist(name) && thisIsTxtFile(name);
 }
 
 int buttonInf()
@@ -291,8 +285,8 @@ int** inputInf(int button, int& size, string& name)
 {
 	const int MAX_SIZE = 100;
 	const int MIN_SIZE = 2; 
-	const int MIN_ELEM = -2e9;
-	const int MAX_ELEM = 2e9;
+	const int MIN_ELEM = -2000000000;
+	const int MAX_ELEM = 2000000000;
 
 	int** arr = new int*;;
 	bool isIncorrect;
@@ -312,7 +306,7 @@ int** inputInf(int button, int& size, string& name)
 			cin >> name;
 			if (isFileOk(name))
 			{
-				arr = readFile(size, name, MIN_SIZE, MAX_SIZE);
+				arr = readFile(size, name, MIN_SIZE, MAX_SIZE, MIN_ELEM, MAX_ELEM);
 			}
 			else
 			{
