@@ -1,16 +1,15 @@
 import java.util.Scanner;
 
 public class Main {
-    static void printInf(int min,long max){
-        System.out.println("Программа вычисляет все числа Марсена меньше n, где n ["+ min +", "+ max +"]");
+    static void printInf(final int MIN,final long MAX){
+        System.out.println("Программа вычисляет все числа Марсена меньше n, где n ["+ MIN +", "+ MAX +"]");
         System.out.println("Число Мерсена -- простое число, которое можно представить в виде 2^р – 1, где р – тоже простое число.");
     }
 
-    static long inputNum(int min, long max){
+    static long inputNum(final int MIN,final long MAX){
         long number;
         boolean isIncorrect;
         number = 0L;
-        isIncorrect = false;
         Scanner input = new Scanner(System.in);
         System.out.println("Введите n");
         do {
@@ -21,11 +20,12 @@ public class Main {
                 System.err.println("Ошибка, неверные данные");
                 isIncorrect = true;
             }
-            if (!isIncorrect && number < min || number > max){
+            if (!isIncorrect && number < MIN || number > MAX){
                 isIncorrect = true;
-                System.err.println("Ошибка, число должно быть больше "+ min +" и меньше "+ max);
+                System.err.println("Ошибка, число должно быть больше "+ MIN +" и меньше "+ MAX);
             }
         } while (isIncorrect);
+        input.close();
         return number;
     }
 
