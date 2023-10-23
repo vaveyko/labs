@@ -98,10 +98,8 @@ Begin
             Arr[I] := SortArr(Arr[I]);
             Inc(I, 2);
         End;
-        SortEvenRow := Arr;
-    End
-    Else
-        SortEvenRow := Arr;
+    End;
+    SortEvenRow := Arr;
 End;
 
 Function ReadSizeFile(MinSize, MaxSize: Integer; Var InfFile: TextFile)
