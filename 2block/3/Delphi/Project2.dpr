@@ -24,11 +24,11 @@ Var
     IsNotSort: Boolean;
 Begin
     IsNotSort := True;
-    while IsNotSort do
+    While IsNotSort Do
     Begin
         IsNotSort := False;
         For I := 1 To High(Arr) Do
-            for J := I to High(Arr) do
+            For J := I To High(Arr) Do
                 If Arr[J - 1] < Arr[J] Then
                 Begin
                     IsNotSort := True;
@@ -70,13 +70,11 @@ Var
     Arr: TwoSizeArr;
     I, J: Integer;
 Begin
-    SetLength(Arr, Row);
-    For I := 0 To High(Arr) Do
-        SetLength(Arr[I], Column);
+    SetLength(Arr, Row, Column);
     For I := 0 To High(Arr) Do
         For J := 0 To High(Arr[I]) Do
         Begin
-            Writeln('Enter a', I+1, J+1, ' element');
+            Writeln('Enter a', I + 1, J + 1, ' element');
             Arr[I][J] := InpValidNum(MIN_ELEM, MAX_ELEM);
         End;
     EnterArr := Arr;
@@ -102,13 +100,10 @@ Var
     CopyArr: TwoSizeArr;
     I, J: Integer;
 Begin
-    SetLength(CopyArr, Length(DefaultArr));
+    SetLength(CopyArr, Length(DefaultArr), Length(DefaultArr));
     For I := 0 To High(CopyArr) Do
-    Begin
-        Setlength(CopyArr[I], Length(DefaultArr[0]));
         For J := 0 To High(CopyArr[I]) Do
             CopyArr[I][J] := DefaultArr[I][J];
-    End;
     MakeCopy := CopyArr;
 End;
 
@@ -130,8 +125,7 @@ Begin
     SortEvenRow := Arr;
 End;
 
-Function ReadSizeFromFile(Var InfFile: TextFile)
-  : Integer;
+Function ReadSizeFromFile(Var InfFile: TextFile): Integer;
 Var
     IsCorrect: Boolean;
     Size: Integer;
@@ -173,8 +167,11 @@ Begin
 End;
 
 Function IsFileTxt(Name: String): Boolean;
+Var
+    LastFourChar: String;
 Begin
-    If Copy(Name, Length(Name) - 3, Length(Name)) = '.txt' Then
+    LastFourChar := Copy(Name, Length(Name) - 3, Length(Name));
+    If LastFourChar = '.txt' Then
         IsFileTxt := True
     Else
     Begin
@@ -191,14 +188,14 @@ Begin
     AssignFile(MyFile, FileName);
     If Not FileExists(FileName) Then
         Writeln('File is not exist');
-    IsFileOk := IsFileTxt(FileName) And FileExists(FileName) And
-      IsFileCorrect(MyFile);
+    IsFileOk := IsFileTxt(FileName) And FileExists(FileName) And IsFileCorrect(MyFile);
 
 End;
 
-Procedure ChekFileAfterReading(Var IsCorrect: Boolean; Var MyFile: TextFile; IsElemIncorrect: Boolean);
+Procedure ChekFileAfterReading(Var IsCorrect: Boolean; Var MyFile: TextFile;
+  IsElemIncorrect: Boolean);
 Begin
-    if IsElemIncorrect then
+    If IsElemIncorrect Then
     Begin
         Writeln('One of the element is incorrect');
         IsCorrect := False;
@@ -323,14 +320,13 @@ Begin
     Until IsCorrect;
 End;
 
-Function InputInf(Var Size: Integer)
-    : TwoSizeArr;
+Function InputInf(Var Size: Integer): TwoSizeArr;
 Var
     Arr: TwoSizeArr;
     ChoiceInp: Integer;
 Begin
     ChoiceInp := UserChoice();
-    If (ChoiceInp = 1) Then
+    If ChoiceInp = 1 Then
         InputFromConsole(Size, Arr)
     Else
         InputFromFile(Size, Arr);
@@ -342,7 +338,6 @@ Begin
     Writeln('Default Array');
     PrintArr(DefaultArr, Size, Size);
     Writeln('Sorted Array');
-    SortedArr := SortEvenRow(DefaultArr, Size);
     PrintArr(SortedArr, Size, Size);
 End;
 
@@ -367,7 +362,7 @@ Procedure OutputInf(DefaultArr, SortedArr: TwoSizeArr; Size: Integer);
 Var
     ChoiceOut: Integer;
 Begin
-    if (Length(DefaultArr) > 1) then
+    If (Length(DefaultArr) > 1) Then
     Begin
         ChoiceOut := UserChoice();
         If (ChoiceOut = 1) Then
@@ -391,4 +386,5 @@ Begin
     OutputInf(ArrOfNum, SortedArr, Size);
 
     Readln;
+
 End.
