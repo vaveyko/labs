@@ -372,14 +372,17 @@ void outputInFile(int** defaultArr, int** sortedArr, int size)
 
 void outputInf(int **defaultArr, int **sortedArr, int size)
 {
-	int choiceOut = userChoice();
-	if ((choiceOut == 1) && (size > 1))
+	if (size > 1)
 	{
-		outputInConsole(defaultArr, sortedArr, size);
-	}
-	else
-	{
-		outputInFile(defaultArr, sortedArr, size);
+		int choiceOut = userChoice();
+		if (choiceOut == 1)
+		{
+			outputInConsole(defaultArr, sortedArr, size);
+		}
+		else
+		{
+			outputInFile(defaultArr, sortedArr, size);
+		}
 	}
 }
 

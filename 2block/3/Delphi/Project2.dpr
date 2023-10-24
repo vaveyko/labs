@@ -368,9 +368,7 @@ Begin
         If (ChoiceOut = 1) Then
             OutputInConsole(DefaultArr, SortedArr, Size)
         Else
-        Begin
             OutputInFile(DefaultArr, SortedArr, Size);
-        End;
     End;
 End;
 
