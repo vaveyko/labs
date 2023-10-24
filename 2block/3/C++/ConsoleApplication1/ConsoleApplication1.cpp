@@ -8,6 +8,11 @@ using std::cout;
 using std::ifstream;
 using std::ofstream;
 
+const int MAX_SIZE = 100;
+const int MIN_SIZE = 2;
+const int MIN_ELEM = -2000000000;
+const int MAX_ELEM = 2000000000;
+
 void printInf()
 {
 	cout << "Program sort even rows of square matrix from larger to smaller\n";
@@ -27,6 +32,7 @@ int inputNum(const int MIN, const int MAX)
 			cout << "Data is not correct, or number is too large\n";
 			while (cin.get() != '\n');
 			isIncorrect = true;
+			cout << "Please, enter again\n";
 		}
 		if (!isIncorrect && cin.get() != '\n')
 		{
@@ -34,40 +40,43 @@ int inputNum(const int MIN, const int MAX)
 			cout << "Data is not correct, or number is too large\n";
 			while (cin.get() != '\n');
 			isIncorrect = true;
+			cout << "Please, enter again\n";
 		}
 		if (!isIncorrect && (number > MAX || number < MIN))
 		{
 			cout << "Error, number should be from " << MIN << " to " << MAX << '\n';
 			isIncorrect = true;
+			cout << "Please, enter again\n";
 		}
 	} while (isIncorrect);
 	return number;
 }
 
-int** enterArr(int row, int col, const int MIN, const int MAX)
+int **enterArr(int size)
 {
-	int** arr = new int*[row];
+	int **arr = new int*[size];
 	int i, j;
-	for (i = 0; i < row; i++)
+	for (i = 0; i < size; i++)
 	{
-		arr[i] = new int[col];
+		arr[i] = new int[size];
 	}
-	for (i = 0; i < row; i++)
+	for (i = 0; i < size; i++)
 	{
-		for (j = 0; j < col; j++)
+		for (j = 0; j < size; j++)
 		{
-			arr[i][j] = inputNum(MIN, MAX);
+			cout << "Enter a" <<  i+1 << j+1 << " element\n";
+			arr[i][j] = inputNum(MIN_ELEM, MAX_ELEM);
 		}
 	}
 	return arr;
 }
 
-void printArr(int** arr, int row, int col)
+void printArr(int **arr, int size)
 {
 	int i, j;
-	for (i = 0; i < row; i++)
+	for (i = 0; i < size; i++)
 	{
-		for (j = 0; j < col; j++)
+		for (j = 0; j < size; j++)
 		{
 			cout << arr[i][j] << " ";
 		}
@@ -75,10 +84,10 @@ void printArr(int** arr, int row, int col)
 	}
 }
 
-void sortArr(int* arr, int size)
+void sortArr(int *arr, int size)
 {
 	bool isNotSorted;
-	int i, buffer;
+	int i, j, buffer;
 	buffer = 0;
 	isNotSorted = true;
 	while (isNotSorted)
@@ -86,42 +95,47 @@ void sortArr(int* arr, int size)
 		isNotSorted = false;
 		for (i = 1; i < size; i++)
 		{
-			if (arr[i - 1] < arr[i])
+			for (j = i; j < size; j++)
 			{
-				isNotSorted = true;
-				buffer = arr[i];
-				arr[i] = arr[i - 1];
-				arr[i - 1] = buffer;
+				if (arr[j - 1] < arr[j])
+				{
+					isNotSorted = true;
+					buffer = arr[j];
+					arr[j] = arr[j - 1];
+					arr[j - 1] = buffer;
+				}
 			}
 		}
 	}
 }
 
-void sortEvenRow(int** arr, int row, int col)
-{
-	int i;
-	for (i = 1; i < row; i += 2)
-	{
-		sortArr(arr[i], col);
-	}
-}
-
-int** copyArr(int** mainArr, int row, int col)
+int** copyArr(int** mainArr, int size)
 {
 	int i, j;
-	int** copiedArr = new int*[row];
-	for (i = 0; i < row; i++)
+	int** copiedArr = new int* [size];
+	for (i = 0; i < size; i++)
 	{
-		copiedArr[i] = new int[col];
+		copiedArr[i] = new int[size];
 	}
-	for (i = 0; i < row; i++)
+	for (i = 0; i < size; i++)
 	{
-		for (j = 0; j < col; j++)
+		for (j = 0; j < size; j++)
 		{
 			copiedArr[i][j] = mainArr[i][j];
 		}
 	}
 	return copiedArr;
+}
+
+int **sortEvenRow(int **arrOfNum, int size)
+{
+	int i;
+	int **arr = copyArr(arrOfNum, size);
+	for (i = 1; i < size; i += 2)
+	{
+		sortArr(arr[i], size);
+	}
+	return arr;
 }
 
 bool thisIsTxtFile(string fileName)
@@ -154,7 +168,7 @@ bool isFileExist(string nameOfFile)
 	}
 }
 
-int readSize(ifstream& file, const int MIN, const int MAX)
+int readSizeFromFile(ifstream &file)
 {
 	int size;
 	char next;
@@ -175,20 +189,20 @@ int readSize(ifstream& file, const int MIN, const int MAX)
 		cout << "size is incorrect, remove other simbols or whitespase";
 		file.clear();
 	}
-	if (isCorrect && (size < MIN) || (size > MAX))
+	if (isCorrect && (size < MIN_SIZE) || (size > MAX_SIZE))
 	{
 		size = 0;
-		cout << "Size of array should be from " << MIN << " to " << MAX;
+		cout << "Size of array should be from " << MIN_SIZE << " to " << MAX_SIZE;
 	}
 	return size;
 }
 
-void chekEnyException(int& size, bool isCorrect, ifstream& file, bool isElemIncorrect, const int MIN, const int MAX)
+void chekAnyException(int &size, bool isCorrect, ifstream &file, bool isElemIncorrect)
 {
 	if (isElemIncorrect)
 	{
 		size = 0;
-		cout << "One of the element is incorrect or out of range [ " << MIN << ", " << MAX << " ]";
+		cout << "One of the element is incorrect or out of range [ " << MIN_ELEM << ", " << MAX_ELEM << " ]";
 	}
 	else if (file.eof() && isCorrect)
 		cout << "Reading is successfull\n";
@@ -204,16 +218,16 @@ void chekEnyException(int& size, bool isCorrect, ifstream& file, bool isElemInco
 	}
 }
 
-int** readFile(int& size, string name, const int MIN_SIZE, const int MAX_SIZE, const int MIN_ELEM, const int MAX_ELEM)
+int **readFile(int &size, string name)
 {
 	int i, j;
 	bool isCorrect, isElemIncorrect;
 	ifstream file(name);
-	size = readSize(file, MIN_SIZE, MAX_SIZE);
+	size = readSizeFromFile(file);
 	isCorrect = size > 1;
 	isElemIncorrect = false;
 
-	int** arr = new int*[size];
+	int **arr = new int*[size];
 	for (i = 0; i < size; i++)
 	{
 		arr[i] = new int[size];
@@ -234,22 +248,22 @@ int** readFile(int& size, string name, const int MIN_SIZE, const int MAX_SIZE, c
 			}
 		}
 	}
-	chekEnyException(size, isCorrect, file, isElemIncorrect, MIN_ELEM, MAX_ELEM);
+	chekAnyException(size, isCorrect, file, isElemIncorrect);
 
 	file.close();
-		return arr;
+	return arr;
 }
 
-void writeFile(int** defoltArr, int** sortedArr, int size, string name)
+void writeFile(int **defaultArr, int **sortedArr, int size, string name)
 {
 	int i, j;
 	ofstream file(name);
-	file << "Defolt array\n";
+	file << "Default array\n";
 	for (i = 0; i < size; i++)
 	{
 		for (j = 0; j < size; j++)
 		{
-			file << defoltArr[i][j] << " ";
+			file << defaultArr[i][j] << " ";
 		}
 		file << '\n';
 	}
@@ -271,84 +285,114 @@ bool isFileOk(string name)
 	return isFileExist(name) && thisIsTxtFile(name);
 }
 
-int buttonInf()
+int userChoice()
 {
-	int button;
+	int choice;
 	cout << "Choose a way of input/output of data\n"
-		<< "1 -- Console\n"
-		<< "2 -- File\n";
-	button = inputNum(1, 2);
-	return button;
+		 << "1 -- Console\n"
+		 << "2 -- File\n";
+	choice = inputNum(1, 2);
+	return choice;
 }
 
-int** inputInf(int button, int& size, string& name)
+int **inputFromConsole(int &size)
 {
-	const int MAX_SIZE = 100;
-	const int MIN_SIZE = 2; 
-	const int MIN_ELEM = -2000000000;
-	const int MAX_ELEM = 2000000000;
-
-	int** arr = new int*;;
-	bool isIncorrect;
-	if (button == 1)
+	cout << "Enter size of array, please\n";
+	size = inputNum(MIN_SIZE, MAX_SIZE);
+	int** arr = new int* [size];
+	for (int i = 0; i < size; i++)
 	{
-		cout << "Enter size of array, please\n";
-		size = inputNum(MIN_SIZE, MAX_SIZE);
-		cout << "Now enter the elements\n";
-		arr = enterArr(size, size, MIN_ELEM, MAX_ELEM);
+		arr[i] = new int[size];
 	}
-	else
-	{	
-		do
-		{
-			isIncorrect = false;
-			cout << "Enter full path to file\n";
-			cin >> name;
-			if (isFileOk(name))
-			{
-				arr = readFile(size, name, MIN_SIZE, MAX_SIZE, MIN_ELEM, MAX_ELEM);
-			}
-			else
-			{
-				isIncorrect = true;
-			}
-		} while (isIncorrect);
-	}
+	cout << "Now enter the elements\n";
+	arr = enterArr(size);
 	return arr;
 }
 
-void outputInf(int** defoltArr, int** sortedArr, int size, int butt, string name)
+int **inputFromFile(int &size)
 {
-	if (butt == 1)
+	bool isIncorrect;
+	int **arr = new int*;
+	string name;
+	do
 	{
-		cout << "Defolt array\n";
-		printArr(defoltArr, size, size);
-		cout << "Sorted array\n";
-		printArr(sortedArr, size, size);
+		isIncorrect = false;
+		cout << "Enter full path to file\n";
+		cin >> name;
+		if (isFileOk(name))
+		{
+			arr = readFile(size, name);
+		}
+		else
+		{
+			isIncorrect = true;
+		}
+	} while (isIncorrect);
+	return arr;
+}
+
+int **inputInf(int &size)
+{
+	int **arr = new int*;
+	int choiceInp = userChoice();
+	if (choiceInp == 1)
+		arr = inputFromConsole(size);
+	else
+		arr = inputFromFile(size);
+	return arr;
+}
+
+void outputInConsole(int **defaultArr, int **sortedArr, int size)
+{
+	cout << "Default array\n";
+	printArr(defaultArr, size);
+	cout << "Sorted array\n";
+	printArr(sortedArr, size);
+}
+
+void outputInFile(int** defaultArr, int** sortedArr, int size)
+{
+	bool isIncorrect;
+	string name;
+	do
+	{
+		isIncorrect = false;
+		cout << "Enter full path to file\n";
+		cin >> name;
+		if (isFileOk(name))
+		{
+			writeFile(defaultArr, sortedArr, size, name);
+		}
+		else
+		{
+			isIncorrect = true;
+		}
+	} while (isIncorrect);
+}
+
+void outputInf(int **defaultArr, int **sortedArr, int size)
+{
+	int choiceOut = userChoice();
+	if ((choiceOut == 1) && (size > 1))
+	{
+		outputInConsole(defaultArr, sortedArr, size);
 	}
 	else
 	{
-		if (size > 1)
-		{
-			writeFile(defoltArr, sortedArr, size, name);
-		}
+		outputInFile(defaultArr, sortedArr, size);
 	}
 }
 
 int main()
 {
-	setlocale(0, "");
-	int** arrOfNum;
-	int** sortedArr;
-	int button, size;
-	string fileName;
+	int **arrOfNum;
+	int **sortedArr;
+	int size;
 
 	printInf();
-	button = buttonInf();
-	arrOfNum = inputInf(button, size, fileName);
-	sortedArr = copyArr(arrOfNum, size, size);
-	sortEvenRow(sortedArr, size, size);
-	outputInf(arrOfNum, sortedArr, size, button, fileName);
+	arrOfNum = inputInf(size);
+	sortedArr = sortEvenRow(arrOfNum, size);
+	outputInf(arrOfNum, sortedArr, size);
 	
     return 0;
 }

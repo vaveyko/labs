@@ -7,6 +7,12 @@ Type
     OneSizeArr = Array Of Integer;
     TwoSizeArr = Array Of OneSizeArr;
 
+Const
+    MAX_SIZE = 100;
+    MIN_SIZE = 2;
+    MIN_ELEM = -MaxInt - 1;
+    MAX_ELEM = MaxInt;
+
 Procedure PrintInf();
 Begin
     Writeln('Program sort even rows of square matrix from larger to smaller');
@@ -14,50 +20,52 @@ End;
 
 Function SortArr(Arr: OneSizeArr): OneSizeArr;
 Var
-    I, Bufer: Integer;
+    I, J, Bufer: Integer;
     IsNotSort: Boolean;
 Begin
     IsNotSort := True;
-    While IsNotSort Do
+    while IsNotSort do
     Begin
         IsNotSort := False;
         For I := 1 To High(Arr) Do
-            If Arr[I - 1] < Arr[I] Then
-            Begin
-                IsNotSort := True;
-                Bufer := Arr[I];
-                Arr[I] := Arr[I - 1];
-                Arr[I - 1] := Bufer;
-            End;
+            for J := I to High(Arr) do
+                If Arr[J - 1] < Arr[J] Then
+                Begin
+                    IsNotSort := True;
+                    Bufer := Arr[J];
+                    Arr[J] := Arr[J - 1];
+                    Arr[J - 1] := Bufer;
+                End;
     End;
     SortArr := Arr;
 End;
 
-Function InpValidNum(Min, Max: Integer): Integer;
+Function InpValidNum(Const MIN, MAX: Integer): Integer;
 Var
     IsCorrect: Boolean;
     Num: Integer;
 Begin
     Repeat
-        Writeln('Please, enter the number');
         Try
             Readln(Num);
             IsCorrect := True;
         Except
             Writeln('Data is not correct, or number is too large',
-              ' (it should be from ', Min, ' to ', Max, ' )');
+              ' (it should be from ', MIN, ' to ', MAX, ' )');
             IsCorrect := False;
+            Writeln('Please, enter again');
         End;
-        If IsCorrect And ((Num < Min) Or (Num > Max)) Then
+        If IsCorrect And ((Num < MIN) Or (Num > MAX)) Then
         Begin
-            Writeln('It should be from ', Min, ' to ', Max);
+            Writeln('It should be from ', MIN, ' to ', MAX);
             IsCorrect := False;
+            Writeln('Please, enter again');
         End;
     Until IsCorrect;
     InpValidNum := Num;
 End;
 
-Function EnterArr(Row, Column, Min, Max: Integer): TwoSizeArr;
+Function EnterArr(Row, Column: Integer): TwoSizeArr;
 Var
     Arr: TwoSizeArr;
     I, J: Integer;
@@ -67,7 +75,10 @@ Begin
         SetLength(Arr[I], Column);
     For I := 0 To High(Arr) Do
         For J := 0 To High(Arr[I]) Do
-            Arr[I][J] := InpValidNum(Min, Max);
+        Begin
+            Writeln('Enter a', I+1, J+1, ' element');
+            Arr[I][J] := InpValidNum(MIN_ELEM, MAX_ELEM);
+        End;
     EnterArr := Arr;
 End;
 
@@ -81,15 +92,32 @@ Begin
     Begin
         For J := 0 To RealCol Do
             Write(Arr[I][J], ' ');
-        Write(#13#10);
+        Writeln;
     End;
 
 End;
 
-Function SortEvenRow(Arr: TwoSizeArr; Row: Integer): TwoSizeArr;
+Function MakeCopy(DefaultArr: TwoSizeArr): TwoSizeArr;
+Var
+    CopyArr: TwoSizeArr;
+    I, J: Integer;
+Begin
+    SetLength(CopyArr, Length(DefaultArr));
+    For I := 0 To High(CopyArr) Do
+    Begin
+        Setlength(CopyArr[I], Length(DefaultArr[0]));
+        For J := 0 To High(CopyArr[I]) Do
+            CopyArr[I][J] := DefaultArr[I][J];
+    End;
+    MakeCopy := CopyArr;
+End;
+
+Function SortEvenRow(DefaultArr: TwoSizeArr; Row: Integer): TwoSizeArr;
 Var
     I: Integer;
+    Arr: TwoSizeArr;
 Begin
+    Arr := MakeCopy(DefaultArr);
     If High(Arr) > 0 Then
     Begin
         I := 1;
@@ -102,7 +130,7 @@ Begin
     SortEvenRow := Arr;
 End;
 
-Function ReadSizeFile(MinSize, MaxSize: Integer; Var InfFile: TextFile)
+Function ReadSizeFromFile(Var InfFile: TextFile)
   : Integer;
 Var
     IsCorrect: Boolean;
@@ -117,13 +145,13 @@ Begin
         Size := 0;
         IsCorrect := False;
     End;
-    If IsCorrect And ((Size < MinSize) Or (Size > MaxSize)) Then
+    If IsCorrect And ((Size < MIN_SIZE) Or (Size > MAX_SIZE)) Then
     Begin
-        Writeln('Size of array should be from ', MinSize, ' to ', MaxSize);
+        Writeln('Size of array should be from ', MIN_SIZE, ' to ', MAX_SIZE);
         IsCorrect := False;
         Size := 0;
     End;
-    ReadSizeFile := Size;
+    ReadSizeFromFile := Size;
 End;
 
 Function IsFileCorrect(Var InfFile: TextFile): Boolean;
@@ -191,8 +219,7 @@ Begin
     End;
 End;
 
-Function ReadValidFileInf(Name: String; Var Size: Integer;
-  MinSize, MaxSize: Integer): TwoSizeArr;
+Function ReadValidFileInf(Name: String; Var Size: Integer): TwoSizeArr;
 Var
     InfFile: TextFile;
     IsCorrect, IsElemIncorrect: Boolean;
@@ -205,7 +232,7 @@ Begin
     Begin
         Reset(InfFile);
 
-        Size := ReadSizeFile(MinSize, MaxSize, InfFile);
+        Size := ReadSizeFromFile(InfFile);
         IsCorrect := Size > 1;
         IsElemIncorrect := False;
         SetLength(Arr, Size, Size);
@@ -229,13 +256,12 @@ Begin
     End
     Else
         IsCorrect := False;
-    If IsCorrect Then
-        ReadValidFileInf := Arr
-    Else
-        ReadValidFileInf := [[]];
+    If Not IsCorrect Then
+        Arr := [[]];
+    ReadValidFileInf := Arr;
 End;
 
-Procedure WriteInfFile(Name: String; Var DefoltArr, SortedArr: TwoSizeArr;
+Procedure WriteInfFile(Name: String; Var DefaultArr, SortedArr: TwoSizeArr;
   Size: Integer);
 Var
     OutFile: TextFile;
@@ -243,11 +269,11 @@ Var
 Begin
     AssignFile(OutFile, Name);
     Rewrite(OutFile);
-    Writeln(OutFile, 'Defolt array');
-    For I := 0 To High(DefoltArr) Do
+    Writeln(OutFile, 'Default array');
+    For I := 0 To High(DefaultArr) Do
     Begin
-        For J := 0 To High(DefoltArr) Do
-            Write(OutFile, DefoltArr[I][J], ' ');
+        For J := 0 To High(DefaultArr) Do
+            Write(OutFile, DefaultArr[I][J], ' ');
         Write(OutFile, #13#10);
     End;
     Writeln(OutFile, 'Sorted array');
@@ -262,96 +288,107 @@ Begin
     Writeln('Writing is successfull');
 End;
 
-Function MakeCopy(DefoltArr: TwoSizeArr): TwoSizeArr;
+Function UserChoice(): Integer;
 Var
-    CopyArr: TwoSizeArr;
-    I, J: Integer;
-Begin
-    SetLength(CopyArr, Length(DefoltArr));
-    For I := 0 To High(CopyArr) Do
-    Begin
-        Setlength(CopyArr[I], Length(DefoltArr[0]));
-        For J := 0 To High(CopyArr[I]) Do
-            CopyArr[I][J] := DefoltArr[I][J];
-    End;
-    MakeCopy := CopyArr;
-End;
-
-Function ButtonInf(): Integer;
-Var
-    Button: Integer;
+    Choice: Integer;
 Begin
     Writeln('Choose a way of input/output of data', #13#10, '1 -- Console',
       #13#10, '2 -- File');
-    Button := InpValidNum(1, 2);
-    ButtonInf := Button;
+    Choice := InpValidNum(1, 2);
+    UserChoice := Choice;
 End;
 
-Function InputInf(Butt: Integer; Var Size: Integer; Var Name: String)
-  : TwoSizeArr;
-Const
-    MAX_SIZE = 100;
-    MIN_SIZE = 2;
-    MIN_ELEM = -MaxInt - 1;
-    MAX_ELEM = MaxInt;
+Procedure InputFromConsole(Var Size: Integer; Var Arr: TwoSizeArr);
+Begin
+    Writeln('Enter size of array, please');
+    Size := InpValidNum(MIN_SIZE, MAX_SIZE);
+    Writeln('Now enter the elements');
+    Arr := EnterArr(Size, Size);
+End;
+
+Procedure InputFromFile(Var Size: Integer; Var Arr: TwoSizeArr);
+Var
+    IsCorrect: Boolean;
+    Name: String;
+Begin
+    Repeat
+        IsCorrect := True;
+        Writeln('Please enter the full path to file');
+        Readln(Name);
+
+        If IsFileOk(Name) Then
+            Arr := ReadValidFileInf(Name, Size)
+        Else
+            IsCorrect := False;
+    Until IsCorrect;
+End;
+
+Function InputInf(Var Size: Integer)
+    : TwoSizeArr;
 Var
     Arr: TwoSizeArr;
-    IsCorrect: Boolean;
+    ChoiceInp: Integer;
 Begin
-    If (Butt = 1) Then
-    Begin
-        Writeln('Enter size of array, please');
-        Size := InpValidNum(MIN_SIZE, MAX_SIZE);
-        Writeln('Now enter the elements');
-        Arr := EnterArr(Size, Size, MIN_ELEM, MAX_ELEM);
-    End
+    ChoiceInp := UserChoice();
+    If (ChoiceInp = 1) Then
+        InputFromConsole(Size, Arr)
     Else
-    Begin
-        Repeat
-            IsCorrect := True;
-            Writeln('Please enter the full path to file');
-            Readln(Name);
-
-            If IsFileOk(Name) Then
-                Arr := ReadValidFileInf(Name, Size, MIN_SIZE, MAX_SIZE)
-            Else
-                IsCorrect := False;
-        Until IsCorrect;
-    End;
+        InputFromFile(Size, Arr);
     InputInf := Arr;
 End;
 
-Procedure OutputInf(DefoltArr, SortedArr: TwoSizeArr; Size, Butt: Integer;
-  Name: String);
+Procedure OutputInConsole(DefaultArr, SortedArr: TwoSizeArr; Size: Integer);
 Begin
-    If Butt = 1 Then
+    Writeln('Default Array');
+    PrintArr(DefaultArr, Size, Size);
+    Writeln('Sorted Array');
+    SortedArr := SortEvenRow(DefaultArr, Size);
+    PrintArr(SortedArr, Size, Size);
+End;
+
+Procedure OutputInFile(DefaultArr, SortedArr: TwoSizeArr; Size: Integer);
+Var
+    IsCorrect: Boolean;
+    Name: String;
+Begin
+    Repeat
+        IsCorrect := True;
+        Writeln('Please enter the full path to file');
+        Readln(Name);
+
+        If IsFileOk(Name) Then
+            WriteInfFile(Name, DefaultArr, SortedArr, Size)
+        Else
+            IsCorrect := False;
+    Until IsCorrect;
+End;
+
+Procedure OutputInf(DefaultArr, SortedArr: TwoSizeArr; Size: Integer);
+Var
+    ChoiceOut: Integer;
+Begin
+    if (Length(DefaultArr) > 1) then
     Begin
-        Writeln('Defolt Array');
-        PrintArr(DefoltArr, Size, Size);
-        Writeln('Sorted Array');
-        SortedArr := SortEvenRow(DefoltArr, Size);
-        PrintArr(SortedArr, Size, Size);
-    End
-    Else
-    Begin
-        If Length(DefoltArr) > 1 Then
-            WriteInfFile(Name, DefoltArr, SortedArr, Size);
+        ChoiceOut := UserChoice();
+        If (ChoiceOut = 1) Then
+            OutputInConsole(DefaultArr, SortedArr, Size)
+        Else
+        Begin
+            OutputInFile(DefaultArr, SortedArr, Size);
+        End;
     End;
 End;
 
 Var
-    Size, Button, I, J: Integer;
+    Size, ChoiceInp, ChoiceOut, I, J: Integer;
     ArrOfNum, SortedArr, Arr: TwoSizeArr;
     FileName: String;
 
 Begin
     PrintInf;
-    Button := ButtonInf();
-    ArrOfNum := InputInf(Button, Size, FileName);
-    SortedArr := MakeCopy(ArrOfNum);
-    SortedArr := SortEvenRow(SortedArr, Size);
-    OutputInf(ArrOfNum, SortedArr, Size, Button, FileName);
+    ArrOfNum := InputInf(Size);
+    SortedArr := SortEvenRow(ArrOfNum, Size);
+    OutputInf(ArrOfNum, SortedArr, Size);
 
     Readln;
-
 End.
