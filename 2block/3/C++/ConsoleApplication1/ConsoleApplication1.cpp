@@ -241,6 +241,7 @@ int **readFile(int &size, string name)
 			else
 			{
 				file >> arr[i][j];
+				cout << arr[i][j] << std::endl;
 				if (file.fail())
 					isElemIncorrect = true;
 				else if (arr[i][j] < MIN_ELEM || arr[i][j] > MAX_ELEM)

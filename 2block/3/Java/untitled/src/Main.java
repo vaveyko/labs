@@ -212,8 +212,6 @@ public class Main {
     }
 
     static int[][] inputFromFile(Scanner input) {
-        boolean isIncorrect;
-        int size;
         String fileName = getFileName(input);
         int[][] arr = null;
         try {
