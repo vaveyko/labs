@@ -181,7 +181,8 @@ public class Main {
 
     static char[] getArrOfHexDigit(int num) {
         boolean isNumNegative = num < 0;
-        return intToHexArr(num, isNumNegative);
+        char[] arr = intToHexArr(num, isNumNegative);
+        return arr = reversArr(arr);
     }
 
     static void writeInConsole(int num, char[] arr) {
@@ -209,7 +210,7 @@ public class Main {
         PrintWriter file = new PrintWriter(fileName);
         file.println("Decimal number:");
         file.println(num);
-        file.println("hexadecimal number");
+        file.println("Hexadecimal number:");
         while (arr[index] == '0') {
             index++;
         }
@@ -220,7 +221,6 @@ public class Main {
     }
 
     static void outputInf(char[] arr, int num, Scanner input) throws IOException{
-        arr = reversArr(arr);
         int choice = userChoice(input);
         if (choice == 1) {
             writeInConsole(num, arr);
