@@ -328,7 +328,7 @@ Begin
     FileName := GetFileName(False);
     AssignFile(MyFile, FileName);
     Rewrite(MyFile);
-
+    Index := 0;
     Writeln(MyFile, 'Decimal number:');
     Writeln(MyFile, Num);
     Writeln(MyFile, 'Hexadecimal number:');

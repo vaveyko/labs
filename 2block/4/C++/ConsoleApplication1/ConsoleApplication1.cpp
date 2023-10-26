@@ -146,8 +146,6 @@ int readFile(int& num, string fileName)
     {
         err = 5;
         file.clear();
-        while (!file.eof())
-            file.get();
         isCorrect = false;
     }
     if (file.eof()) {
@@ -157,8 +155,6 @@ int readFile(int& num, string fileName)
     if (isCorrect && (file.get() != '\n'))
     {
         err = 6;
-        while (!file.eof())
-            file.get();
         isCorrect = false;
     }
     if (isCorrect && (num < MIN_ELEM || num > MAX_ELEM)){
