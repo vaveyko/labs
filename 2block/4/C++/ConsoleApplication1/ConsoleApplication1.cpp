@@ -60,13 +60,15 @@ char *intToHexArr(int num, int size, bool isNumNegative)
         }
     }
     else
-    {
-        hexNumArr[index] = HEX_ELEM[num];
-        index++;
-    }
+        hexNumArr[index++] = HEX_ELEM[num];
     if (isNumNegative)
         hexNumArr[index] = HEX_ELEM[16];
     return hexNumArr;
+}
+
+void freeArr(char *arr)
+{
+    delete[] arr;
 }
 
 char *reversArr(char *arr, int size) {
@@ -76,6 +78,7 @@ char *reversArr(char *arr, int size) {
     while (index < size) {
         reversedArr[index++] = arr[i--];
     }
+    freeArr(arr);
     return reversedArr;
 }
 
@@ -268,6 +271,7 @@ void outputInConsole(int num, char* arr, int size)
     }
     else
         cout << arr[index];
+    freeArr(arr);
 }
 
 void outputInFile(int num, char* arr, int size)
@@ -277,9 +281,9 @@ void outputInFile(int num, char* arr, int size)
     cout << "Enter full path to file\n";
     string fileName = getFileName();
     ofstream file(fileName);
-    file << "Decimal number:\n";
+    file << "Decimal number:" << endl;
     file << num << endl;
-    file << "Hexadecimal number:\n";
+    file << "Hexadecimal number:" << endl;
     if (size > 1)
     {
         while (arr[index] == '0')
@@ -290,6 +294,7 @@ void outputInFile(int num, char* arr, int size)
     else
         file << arr[index];
     cout << "Writing is successfull\n";
+    freeArr(arr);
     file.close();
 }
 
