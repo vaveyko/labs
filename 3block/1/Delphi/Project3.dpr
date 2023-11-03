@@ -7,8 +7,8 @@ Const
     MIN_CHOICE = 1;
     MAX_CHOICE = 2;
     SUCCESS = 0;
+    EMPTY_LINE = 2;
     INCORRECT_DATA = 1;
-    OUT_OF_BORD = 2;
     NOT_TXT = 3;
     FILE_NOT_EXIST = 4;
     INCORRECT_DATA_FILE = 5;
@@ -17,7 +17,7 @@ Const
     DIGITS = ['0' .. '9'];
     ERRORS: Array [0 .. 7] Of String = ('Successfull',
                                         'Data is not correct',
-                                        'Enter the number within the borders',
+                                        'Line is empty, please be careful',
                                         'This is not a .txt file',
                                         'This file is not exist',
                                         'Data in file is not correct',
@@ -26,8 +26,8 @@ Const
 
 Procedure PrintInf();
 Begin
-    Writeln('Program selects a substring consisting of digits corresponding',
-      'to an integer (starts with a "+" or "-"',
+    Writeln('Program selects a substring consisting of digits corresponding ',
+      'to an integer', #10#13, '(starts with a "+" or "-"',
       'and there are no letters and dots inside the substring)');
 End;
 
@@ -37,7 +37,7 @@ Var
     I: Integer;
     Num: String;
 Begin
-    Num := '';
+    Num := 'not exist';
     IsNumNotExist := True;
     IsNotEnd := True;
     For I := 1 To Length(Line) Do
@@ -60,22 +60,15 @@ End;
 
 Function InpChoice(Var Choice: Integer): Integer;
 Var
-    ChoiceInt, Err: Integer;
+    Err: Integer;
     ChoiceStr: String;
-    IsCorrect: Boolean;
 Begin
     Err := SUCCESS;
-    IsCorrect := True;
     Readln(ChoiceStr);
-    Try
-        ChoiceInt := StrToInt(ChoiceStr);
-    Except
+    If (ChoiceStr = '1') Or (ChoiceStr = '2')Then
+        Choice := StrToInt(ChoiceStr)
+    Else
         Err := INCORRECT_DATA;
-        IsCorrect := False;
-    End;
-    If IsCorrect And ((ChoiceInt > MAX_CHOICE) Or (ChoiceInt < MIN_CHOICE)) Then
-        Err := OUT_OF_BORD;
-    Choice := ChoiceInt;
     InpChoice := Err;
 End;
 
@@ -86,7 +79,7 @@ Begin
     Err := SUCCESS;
     Readln(Line);
     If Length(Line) = 0 Then
-        Err := INCORRECT_DATA;
+        Err := EMPTY_LINE;
     InpValidLine := Err;
 End;
 
@@ -215,17 +208,11 @@ Begin
     Reset(InfFile);
     IsCorrect := True;
     Err := SUCCESS;
-    Try
-        Read(InfFile, Line);
-    Except
-        Err := INCORRECT_DATA_FILE;
-        IsCorrect := False;
-    End;
-    If IsCorrect And Not EoF(InfFile) Then
-    Begin
-        IsCorrect := False;
+    Read(InfFile, Line);
+    If Not EoF(InfFile) Then
         Err := A_LOT_OF_DATA_FILE;
-    End;
+    if Length(Line) = 0 then
+        Err := EMPTY_LINE;
     CloseFile(InfFile);
     ReadFile := Err;
 End;
@@ -301,7 +288,6 @@ Var
 
 Begin
     PrintInf();
-
     Line := InputInf();
     Num := GetNumFromLine(Line);
     OutputInf(Line, Num);
