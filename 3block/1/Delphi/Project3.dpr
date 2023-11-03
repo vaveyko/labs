@@ -27,7 +27,7 @@ Const
 Procedure PrintInf();
 Begin
     Writeln('Program selects a substring consisting of digits corresponding ',
-      'to an integer', #10#13, '(starts with a "+" or "-"',
+      'to an integer', #10#13, '(starts with a "+" or "-" ',
       'and there are no letters and dots inside the substring)');
 End;
 
