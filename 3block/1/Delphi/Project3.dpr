@@ -3,20 +3,13 @@ Program Project3;
 Uses
     System.SysUtils;
 
+Type
+    ERRORS_CODE = (SUCCESS, INCORRECT_DATA, EMPTY_LINE, NOT_TXT, FILE_NOT_EXIST,
+      INCORRECT_DATA_FILE, A_LOT_OF_DATA_FILE, FILE_NOT_AVAILABLE);
+
 Const
-    MIN_CHOICE = 1;
-    MAX_CHOICE = 2;
-    SUCCESS = 0;
-    EMPTY_LINE = 2;
-    INCORRECT_DATA = 1;
-    NOT_TXT = 3;
-    FILE_NOT_EXIST = 4;
-    INCORRECT_DATA_FILE = 5;
-    A_LOT_OF_DATA_FILE = 6;
-    FILE_NOT_AVAILABLE = 7;
     DIGITS = ['0' .. '9'];
-    ERRORS: Array [0 .. 7] Of String = ('Successfull',
-                                        'Data is not correct',
+    ERRORS: Array [0 .. 7] Of String = ('Successfull', 'Data is not correct',
                                         'Line is empty, please be careful',
                                         'This is not a .txt file',
                                         'This file is not exist',
@@ -27,35 +20,39 @@ Const
 Procedure PrintInf();
 Begin
     Writeln('Program selects a substring consisting of digits corresponding ',
-      'to an integer', #10#13, '(starts with a "+" or "-" ',
-      'and there are no letters and dots inside the substring)');
+            'to an integer', #10#13, '(starts with a "+" or "-" ',
+            'and there are no letters and dots inside the substring)');
 End;
 
 Function GetNumFromLine(Line: String): String;
 Var
-    IsNumNotExist, IsNotEnd: Boolean;
-    I: Integer;
-    Num: String;
+    IsNumbNotExist: Boolean;
+    I, Size: Integer;
+    Numb: String;
 Begin
-    Num := 'not exist';
-    IsNumNotExist := True;
-    IsNotEnd := True;
-    For I := 1 To Length(Line) Do
+    Numb := 'not exist';
+    IsNumbNotExist := True;
+    Size := Length(Line) + 1;
+    I := 1;
+    While I < Size Do
     Begin
-        If Not IsNumNotExist And IsNotEnd Then
+        If (IsNumbNotExist And ((Line[I] = '+') Or (Line[I] = '-'))) Then
         Begin
-            If Line[I] In DIGITS Then
-                Num := Num + Line[I]
-            Else
-                IsNotEnd := False;
-        End;
-        If IsNumNotExist And ((Line[I] = '-') Or (Line[I] = '+')) Then
-        Begin
-            Num := Line[I];
-            IsNumNotExist := False;
-        End;
+            Numb := Line[I];
+            Inc(I);
+            While ((I < Size) And (Line[I] In DIGITS)) Do
+            Begin
+                Numb := Numb + Line[I];
+                Inc(I);
+            End;
+            IsNumbNotExist := Length(Numb) = 1;
+            If IsNumbNotExist Then
+                Numb := 'not exist';
+        End
+        Else
+            Inc(I);
     End;
-    GetNumFromLine := Num;
+    GetNumFromLine := Numb;
 End;
 
 Function InpChoice(Var Choice: Integer): Integer;
@@ -63,12 +60,14 @@ Var
     Err: Integer;
     ChoiceStr: String;
 Begin
-    Err := SUCCESS;
+    Err := Ord(SUCCESS);
     Readln(ChoiceStr);
-    If (ChoiceStr = '1') Or (ChoiceStr = '2')Then
+    If (ChoiceStr = '1') Or (ChoiceStr = '2') Then
         Choice := StrToInt(ChoiceStr)
+    Else If (Length(ChoiceStr) > 0) Then
+        Err := Ord(INCORRECT_DATA)
     Else
-        Err := INCORRECT_DATA;
+        Err := Ord(EMPTY_LINE);
     InpChoice := Err;
 End;
 
@@ -76,10 +75,10 @@ Function InpValidLine(Var Line: String): Integer;
 Var
     Err: Integer;
 Begin
-    Err := SUCCESS;
+    Err := Ord(SUCCESS);
     Readln(Line);
     If Length(Line) = 0 Then
-        Err := EMPTY_LINE;
+        Err := Ord(EMPTY_LINE);
     InpValidLine := Err;
 End;
 
@@ -89,14 +88,12 @@ Var
     Err: Integer;
 Begin
     Writeln('Choose a way of input/output of data', #13#10, '1 -- Console',
-      #13#10, '2 -- File');
-    Err := InpChoice(Choice);
-    While (Err > 0) Do
-    Begin
-        Writeln(ERRORS[Err]);
-        Writeln('Please, enter again');
+             #13#10, '2 -- File');
+    Repeat
         Err := InpChoice(Choice);
-    End;
+        If (Err > 0) then
+            Writeln(ERRORS[Err], #10#13, 'Please, enter again');
+    Until (Err = 0);
     UserChoice := Choice;
 End;
 
@@ -105,13 +102,11 @@ Var
     Err: Integer;
 Begin
     Writeln('Enter the line');
-    Err := InpValidLine(Line);
-    While Err > 0 Do
-    Begin
-        Writeln(ERRORS[Err]);
-        Writeln('Please, enter again');
+    Repeat
         Err := InpValidLine(Line);
-    End;
+        If (Err > 0) then
+            Writeln(ERRORS[Err], #10#13, 'Please, enter again');
+    Until (Err = 0);
 End;
 
 Function FileAvailable(Name: String; ForReset: Boolean): Integer;
@@ -119,38 +114,57 @@ Var
     Err: Integer;
     MyFile: TextFile;
 Begin
-    Err := SUCCESS;
+    Err := Ord(SUCCESS);
     AssignFile(MyFile, Name);
     If ForReset Then
         Try
             Try
                 Reset(MyFile);
             Finally
-                Close(MyFile);
+                CloseFile(MyFile);
             End;
         Except
-            Err := FILE_NOT_AVAILABLE;
+            Err := Ord(FILE_NOT_AVAILABLE);
         End
     Else
         Try
             Try
                 Rewrite(MyFile);
             Finally
-                Close(MyFile);
+                CloseFile(MyFile);
             End;
         Except
-            Err := FILE_NOT_AVAILABLE;
+            Err := Ord(FILE_NOT_AVAILABLE);
         End;
     FileAvailable := Err;
+End;
+
+Function GetLastFourChar(Line: String): String;
+Var
+    Start, I, Size: Integer;
+    LastFourChar: String;
+Begin
+    Size := Length(Line);
+    Start := Size - 4;
+    For I := Start To Size Do
+        LastFourChar := LastFourChar + Line[I];
+    GetLastFourChar := LastFourChar;
 End;
 
 Function FileTxt(Name: String): Integer;
 Var
     Err: Integer;
+    LastFourChar: String;
 Begin
-    Err := SUCCESS;
-    If ExtractFileExt(Name) <> '.txt' Then
-        Err := NOT_TXT;
+    Err := Ord(SUCCESS);
+    If Length(Name) > 4 Then
+    Begin
+        LastFourChar := GetLastFourChar(Name);
+        If LastFourChar <> '.txt' Then
+            Err := Ord(NOT_TXT);
+    End
+    Else
+        Err := Ord(NOT_TXT);
     FileTxt := Err;
 End;
 
@@ -158,9 +172,9 @@ Function FileExist(Name: String): Integer;
 Var
     Err: Integer;
 Begin
-    Err := SUCCESS;
+    Err := Ord(SUCCESS);
     If Not FileExists(Name) Then
-        Err := FILE_NOT_EXIST;
+        Err := Ord(FILE_NOT_EXIST);
     FileExist := Err;
 End;
 
@@ -206,13 +220,15 @@ Var
 Begin
     AssignFile(InfFile, Name);
     Reset(InfFile);
+
     IsCorrect := True;
-    Err := SUCCESS;
+    Err := Ord(SUCCESS);
     Read(InfFile, Line);
     If Not EoF(InfFile) Then
-        Err := A_LOT_OF_DATA_FILE;
-    if Length(Line) = 0 then
-        Err := EMPTY_LINE;
+        Err := Ord(A_LOT_OF_DATA_FILE);
+    If Length(Line) = 0 Then
+        Err := Ord(EMPTY_LINE);
+
     CloseFile(InfFile);
     ReadFile := Err;
 End;
@@ -223,15 +239,12 @@ Var
     FileName: String;
 Begin
     Writeln('Enter full path to file');
-    FileName := GetFileName(True);
-    Err := ReadFile(Line, FileName);
-    While (Err > 0) Do
-    Begin
-        Writeln(ERRORS[Err]);
-        Writeln('Please, enter full path again');
+    Repeat
         FileName := GetFileName(True);
         Err := ReadFile(Line, FileName);
-    End;
+        If (Err > 0) then
+            Writeln(ERRORS[Err], #10#13, 'Please, enter full path again');
+    Until (Err = 0);
     Writeln('Reading is successfull');
 
 End;

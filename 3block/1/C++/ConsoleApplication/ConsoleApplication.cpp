@@ -4,55 +4,57 @@
 
 using namespace std;
 
-const int SUCCESS = 0;
-const int INCORRECT_DATA = 1;
-const int EMPTY_LINE = 2;
-const int NOT_TXT = 3;
-const int FILE_NOT_EXIST = 4;
-const int INCORRECT_DATA_FILE = 5;
-const int A_LOT_OF_DATA_FILE = 6;
-const int FILE_NOT_AVAILABLE = 7;
-const string DIGITS[10] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+enum ErrorsCode
+{
+    SUCCESS,
+    INCORRECT_DATA,
+    EMPTY_LINE,
+    NOT_TXT,
+    FILE_NOT_EXIST,
+    A_LOT_OF_DATA_FILE,
+};
 
 const string ERRORS[] = { "Successfull",
                           "Data is not correct, or number is too large\n",
                           "Line is empty, please be careful\n",
                           "This is not a .txt file\n",
                           "This file is not exist\n",
-                          "Data in file is not correct, or number is too large\n",
                           "There is only one line in file should be\n" };
 
 void printInf()
 {
     cout << "Program selects a substring consisting of digits corresponding "
          << "to an integer \n(starts with a '+' or '-' "
-         << " and there are no letters and dots inside the substring\n";
+         << "and there are no letters and dots inside the substring\n";
 }
 
 string getNumFromLine(string line)
 {
-    string num;
-    int size, i;
-    bool isNumNotExist, isNotEnd;
-    isNumNotExist = true;
-    isNotEnd = true;
-    num = "not exist";
-    for (i = 0; i < line.length(); i++)
+    string numb;
+    int i, size;
+    bool isNumbNotExist;
+    isNumbNotExist = true;
+    size = line.length();
+    i = 0;
+    numb = "not exist";
+
+    while (i < size)
     {
-        if (!isNumNotExist && isNotEnd)
+        if (isNumbNotExist && (line[i] == '+' || line[i] == '-'))
         {
-            if (isdigit(line[i]))
-                num += line[i];
-            else
-                isNotEnd = false;
+            numb = line[i];
+            i++;
+            while (i < size && isdigit(line[i]))
+                numb += line[i++];
+            isNumbNotExist = numb.length() == 1;
+            if (isNumbNotExist)
+                numb = "not exist";
         }
-        if (isNumNotExist && (line[i] == '-' || line[i] == '+'))
-        {
-            num = line[i];
-            isNumNotExist = false;
-        }
+        else
+            ++i;
     }
-    return num;
+
+    return numb;
 }
 
 int inpChoice(int& choice)
@@ -64,7 +66,7 @@ int inpChoice(int& choice)
     if (choiceStr == "1" || choiceStr == "2")
         choice = stoi(choiceStr);
     else
-        err = INCORRECT_DATA;
+        err = choiceStr.length() > 0 ? INCORRECT_DATA : EMPTY_LINE;
     return err;
 }
 
@@ -74,13 +76,13 @@ int userChoice()
     cout << "Choose a way of input/output of data\n"
         << "1 -- Console\n"
         << "2 -- File\n";
-    int err = inpChoice(choice);
-    while (err != 0)
+    int err;
+    do
     {
-        cout << ERRORS[err];
-        cout << "Please, enter again\n";
         err = inpChoice(choice);
-    }
+        if (err > 0)
+            cout << ERRORS[err] << "Please, enter again\n";
+    } while (err > 0);
     return choice;
 }
 
@@ -97,13 +99,13 @@ int inpValidLine(string& line)
 void inputFromConsole(string& line)
 {
     cout << "Enter the line\n";
-    int err = inpValidLine(line);
-    while (err != 0)
+    int err;
+    do
     {
-        cout << ERRORS[err];
-        cout << "Please, enter again\n";
         err = inpValidLine(line);
-    }
+        if (err > 0)
+            cout << ERRORS[err] << "Please, enter again\n";
+    } while (err > 0);
 }
 
 int readFile(string &line, string fileName)
@@ -122,21 +124,31 @@ int readFile(string &line, string fileName)
 
 int isFileExist(string nameOfFile)
 {
-    int err = SUCCESS;
+    int err;
     ifstream file(nameOfFile);
-    if (!file.is_open())
-        err = FILE_NOT_EXIST;
-
+    err = file.is_open() ? SUCCESS : FILE_NOT_EXIST;
     file.close();
     return err;
+}
+
+string getLastFourChar(string line)
+{
+    string lastFourChar;
+    int start, i, size;
+    size = line.length();
+    start = size - 4;
+    for (i = start; i < size; i++)
+        lastFourChar += line[i];
+    return lastFourChar;
 }
 
 int thisIsTxtFile(string& fileName)
 {
     int err = SUCCESS;
+    string lastFourChar;
     if (fileName.length() > 4)
     {
-        string lastFourChar = fileName.substr(fileName.length() - 4);
+        lastFourChar = getLastFourChar(fileName);
         if (lastFourChar != ".txt")
             err = NOT_TXT;
     }
@@ -149,8 +161,7 @@ string getFileName()
 {
     bool isIncorrect;
     string name;
-    int errExist = 0;
-    int errTxt = 0;
+    int errExist, errTxt;
     cout << "Enter full path to file\n";
     do
     {
@@ -175,14 +186,15 @@ string getFileName()
 
 void inputFromFile(string &line)
 {
-    string fileName = getFileName();
-    int err = readFile(line, fileName);
-    while (err != 0)
+    string fileName;
+    int err;
+    do
     {
-        cout << ERRORS[err];
         fileName = getFileName();
         err = readFile(line, fileName);
-    }
+        if (err > 0)
+            cout << ERRORS[err] << "Please, enter full path again\n";
+    } while (err > 0);
     cout << "Reading is successfull\n";
 }
 
@@ -203,10 +215,8 @@ void outputInConsole(string line, string num)
     cout << "Substring\n" << num << endl;
 }
 
-void outputInFile(string line, string num)           //TODO in delphi add error about empty line
+void outputInFile(string line, string num)
 {
-    int index = 0;
-    int i;
     string fileName = getFileName();
     ofstream file(fileName);
     file << "Default line\n" << line << endl;
