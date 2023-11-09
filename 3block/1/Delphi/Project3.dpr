@@ -145,7 +145,7 @@ Var
     LastFourChar: String;
 Begin
     Size := Length(Line);
-    Start := Size - 4;
+    Start := Size - 3;
     For I := Start To Size Do
         LastFourChar := LastFourChar + Line[I];
     GetLastFourChar := LastFourChar;
@@ -215,13 +215,11 @@ End;
 Function ReadFile(Var Line: String; Name: String): Integer;
 Var
     Err: Integer;
-    IsCorrect: Boolean;
     InfFile: TextFile;
 Begin
     AssignFile(InfFile, Name);
     Reset(InfFile);
 
-    IsCorrect := True;
     Err := Ord(SUCCESS);
     Read(InfFile, Line);
     If Not EoF(InfFile) Then
