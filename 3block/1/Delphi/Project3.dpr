@@ -9,7 +9,7 @@ Type
 
 Const
     DIGITS = ['0' .. '9'];
-    ERRORS: Array [0 .. 7] Of String = ('Successfull', 'Data is not correct',
+    ERRORS: Array [ERRORS_CODE] Of String = ('Successfull', 'Data is not correct',
                                         'Line is empty, please be careful',
                                         'This is not a .txt file',
                                         'This file is not exist',
@@ -55,66 +55,66 @@ Begin
     GetNumFromLine := Numb;
 End;
 
-Function InpChoice(Var Choice: Integer): Integer;
+Function InpChoice(Var Choice: Integer): ERRORS_CODE;
 Var
-    Err: Integer;
+    Err: ERRORS_CODE;
     ChoiceStr: String;
 Begin
-    Err := Ord(SUCCESS);
+    Err := SUCCESS;
     Readln(ChoiceStr);
     If (ChoiceStr = '1') Or (ChoiceStr = '2') Then
         Choice := StrToInt(ChoiceStr)
     Else If (Length(ChoiceStr) > 0) Then
-        Err := Ord(INCORRECT_DATA)
+        Err := INCORRECT_DATA
     Else
-        Err := Ord(EMPTY_LINE);
+        Err := EMPTY_LINE;
     InpChoice := Err;
 End;
 
-Function InpValidLine(Var Line: String): Integer;
+Function InpValidLine(Var Line: String): ERRORS_CODE;
 Var
-    Err: Integer;
+    Err: ERRORS_CODE;
 Begin
-    Err := Ord(SUCCESS);
+    Err := SUCCESS;
     Readln(Line);
     If Length(Line) = 0 Then
-        Err := Ord(EMPTY_LINE);
+        Err := EMPTY_LINE;
     InpValidLine := Err;
 End;
 
 Function UserChoice(): Integer;
 Var
     Choice: Integer;
-    Err: Integer;
+    Err: ERRORS_CODE;
 Begin
     Writeln('Choose a way of input/output of data', #13#10, '1 -- Console',
              #13#10, '2 -- File');
     Repeat
         Err := InpChoice(Choice);
-        If (Err > 0) then
+        If (Ord(Err) > 0) then
             Writeln(ERRORS[Err], #10#13, 'Please, enter again');
-    Until (Err = 0);
+    Until (Ord(Err) = 0);
     UserChoice := Choice;
 End;
 
 Procedure InputFromConsole(Var Line: String);
 Var
-    Err: Integer;
+    Err: ERRORS_CODE;
 Begin
     Writeln('Enter the line');
     Repeat
         Err := InpValidLine(Line);
-        If (Err > 0) then
+        If (Ord(Err) > 0) then
             Writeln(ERRORS[Err], #10#13, 'Please, enter again');
-    Until (Err = 0);
+    Until (Ord(Err) = 0);
 End;
 
-Function FileAvailable(Name: String; ForReset: Boolean): Integer;
+Function FileAvailable(Name: String; ForReset: Boolean): ERRORS_CODE;
 Var
-    Err: Integer;
+    Err: ERRORS_CODE;
     MyFile: TextFile;
 Begin
-    Err := Ord(SUCCESS);
+    Err := SUCCESS;
     AssignFile(MyFile, Name);
     If ForReset Then
         Try
@@ -124,7 +124,7 @@ Begin
                 CloseFile(MyFile);
             End;
         Except
-            Err := Ord(FILE_NOT_AVAILABLE);
+            Err := FILE_NOT_AVAILABLE;
         End
     Else
         Try
@@ -134,7 +134,7 @@ Begin
                 CloseFile(MyFile);
             End;
         Except
-            Err := Ord(FILE_NOT_AVAILABLE);
+            Err := FILE_NOT_AVAILABLE;
         End;
     FileAvailable := Err;
 End;
@@ -151,37 +151,37 @@ Begin
     GetLastFourChar := LastFourChar;
 End;
 
-Function FileTxt(Name: String): Integer;
+Function FileTxt(Name: String): ERRORS_CODE;
 Var
-    Err: Integer;
+    Err: ERRORS_CODE;
     LastFourChar: String;
 Begin
-    Err := Ord(SUCCESS);
+    Err := SUCCESS;
     If Length(Name) > 4 Then
     Begin
         LastFourChar := GetLastFourChar(Name);
         If LastFourChar <> '.txt' Then
-            Err := Ord(NOT_TXT);
+            Err := NOT_TXT;
     End
     Else
-        Err := Ord(NOT_TXT);
+        Err := NOT_TXT;
     FileTxt := Err;
 End;
 
-Function FileExist(Name: String): Integer;
+Function FileExist(Name: String): ERRORS_CODE;
 Var
-    Err: Integer;
+    Err: ERRORS_CODE;
 Begin
-    Err := Ord(SUCCESS);
+    Err := SUCCESS;
     If Not FileExists(Name) Then
-        Err := Ord(FILE_NOT_EXIST);
+        Err := FILE_NOT_EXIST;
     FileExist := Err;
 End;
 
 Function GetFileName(ForReset: Boolean): String;
 Var
     IsCorrect: Boolean;
-    ErrExist, ErrTxt, ErrAvailable: Integer;
+    ErrExist, ErrTxt, ErrAvailable: ERRORS_CODE;
     FileName: String;
 Begin
     Repeat
@@ -189,20 +189,20 @@ Begin
         Readln(FileName);
         ErrExist := FileExist(FileName);
         ErrTxt := FileTxt(FileName);
-        If (ErrExist > 0) Then
+        If (Ord(ErrExist) > 0) Then
         Begin
             Writeln(ERRORS[ErrExist]);
             IsCorrect := False;
         End
-        Else If (ErrTxt > 0) Then
+        Else If (Ord(ErrTxt) > 0) Then
         Begin
             Writeln(ERRORS[ErrTxt]);
             IsCorrect := False;
         End;
-        If ((ErrExist = 0) And (ErrTxt = 0)) Then
+        If ((Ord(ErrExist) = 0) And (Ord(ErrTxt) = 0)) Then
         Begin
             ErrAvailable := FileAvailable(FileName, ForReset);
-            If (ErrAvailable > 0) Then
+            If (Ord(ErrAvailable) > 0) Then
             Begin
                 Writeln(ERRORS[ErrAvailable]);
                 IsCorrect := False;
@@ -212,20 +212,20 @@ Begin
     GetFileName := FileName;
 End;
 
-Function ReadFile(Var Line: String; Name: String): Integer;
+Function ReadFile(Var Line: String; Name: String): ERRORS_CODE;
 Var
-    Err: Integer;
+    Err: ERRORS_CODE;
     InfFile: TextFile;
 Begin
     AssignFile(InfFile, Name);
     Reset(InfFile);
 
-    Err := Ord(SUCCESS);
+    Err := SUCCESS;
     Read(InfFile, Line);
     If Not EoF(InfFile) Then
-        Err := Ord(A_LOT_OF_DATA_FILE);
+        Err := A_LOT_OF_DATA_FILE;
     If Length(Line) = 0 Then
-        Err := Ord(EMPTY_LINE);
+        Err := EMPTY_LINE;
 
     CloseFile(InfFile);
     ReadFile := Err;
@@ -233,16 +233,16 @@ End;
 
 Procedure InputFromFile(Var Line: String);
 Var
-    Err: Integer;
+    Err: ERRORS_CODE;
     FileName: String;
 Begin
     Writeln('Enter full path to file');
     Repeat
         FileName := GetFileName(True);
         Err := ReadFile(Line, FileName);
-        If (Err > 0) then
+        If (Ord(Err) > 0) then
             Writeln(ERRORS[Err], #10#13, 'Please, enter full path again');
-    Until (Err = 0);
+    Until (Ord(Err) = 0);
     Writeln('Reading is successfull');
 
 End;
