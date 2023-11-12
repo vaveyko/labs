@@ -334,7 +334,6 @@ void outputInf(set<int> defaultSet, set<int> setSimple, set<int> setComposit)
         outputInFile(defaultSet, setSimple, setComposit);
 }
 
-
 int main()
 {
     int* borders;
