@@ -32,12 +32,12 @@ End;
 Function IsNumbSimple(Numb: Integer): Boolean;
 Var
     IsSimple: Boolean;
-    RigthBord, I: Integer;
+    RightBord, I: Integer;
 Begin
-    RigthBord := Trunc(Sqrt(Numb));
+    RightBord := Trunc(Sqrt(Numb));
     IsSimple := True;
     if Numb > 3 then
-        For I := 2 To RigthBord Do
+        For I := 2 To RightBord Do
             If Numb Mod I = 0 Then
                 IsSimple := False;
     IsNumbSimple := IsSimple;
