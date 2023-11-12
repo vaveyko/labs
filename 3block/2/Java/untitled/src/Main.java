@@ -46,7 +46,7 @@ public class Main {
         boolean isSimple;
         isSimple = true;
         int rightBord;
-        rightBord = (int) Math.sqrt(numb);
+        rightBord = (int) Math.sqrt(numb)+1;
         if (numb > 3)
             for (int i = 2; i < rightBord && isSimple; i++)
                 if (numb % i == 0)
@@ -78,10 +78,6 @@ public class Main {
             numbSet.add(i);
         return numbSet;
     }
-
-
-
-
 
     static Codes inputChoice(Scanner input, int[] choice){
         Codes err;
@@ -321,12 +317,6 @@ public class Main {
             writeInFile(defaultSet, setSimple, setComposit, input);
         }
     }
-
-
-
-
-
-
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
