@@ -31,7 +31,7 @@ public class Main {
             "This is not a .txt file",
             "This file is not exist",
             "Data in file is not correct",
-            "There is only one line in file should be",
+            "There are two numbers in file should be",
             "Exception with output/input from the file",
             "Out of border [0, 255]",
             "Incorrect borders"};
@@ -202,6 +202,8 @@ public class Main {
                 borders[1] = border[0];
                 if (borders[0] > borders[1])
                     err = Codes.INCORRECT_BORDERS;
+                if (file.hasNextLine())
+                    err = Codes.A_LOT_OF_DATA_FILE;
             }
         }
         return err;

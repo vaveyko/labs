@@ -11,6 +11,8 @@ Type
                    OUT_OF_BORDER, INCORRECT_BORDERS);
 
 Const
+    MAX_NUMB = 255;
+    MIN_NUMB = 0;
     ERRORS: Array [ERRORS_CODE] Of String = ('Successfull',
                                         'Data is not correct',
                                         'Line is empty, please be careful',
@@ -109,7 +111,7 @@ Begin
         IsCorrect := False;
     End;
     if IsCorrect then
-        If (NumbInt > 255) Or (NumbInt < 0) Then
+        If (NumbInt > MAX_NUMB) Or (NumbInt < MIN_NUMB) Then
             Err := OUT_OF_BORDER
         Else
             Numb := NumbInt;
@@ -285,7 +287,7 @@ Begin
         IsCorrect := False;
     End;
     if IsCorrect then
-        If (NumbInt > 255) Or (NumbInt < 0) Then
+        If (NumbInt > MAX_NUMB) Or (NumbInt < MIN_NUMB) Then
             Err := OUT_OF_BORDER
         Else
             Numb := NumbInt;
@@ -305,6 +307,8 @@ Begin
     Begin
         Err := ReadOneFromFile(Borders[1], InfFile);
         if Err = SUCCESS then
+            if (Borders[0] > Borders[1]) then
+                Err := INCORRECT_BORDERS;
             If Not EoF(InfFile) Then
                 Err := A_LOT_OF_DATA_FILE;
     End;
@@ -324,7 +328,7 @@ Begin
         FileName := GetFileName(True);
         Err := ReadFile(Borders, FileName);
         If (Err <> SUCCESS) then
-            Writeln(ERRORS[Err]);
+            Writeln(ERRORS[Err], #13#10, 'Enter full path to file');
     Until (Err = SUCCESS);
     Writeln('Reading is successfull');
     InputFromFile := Borders;
