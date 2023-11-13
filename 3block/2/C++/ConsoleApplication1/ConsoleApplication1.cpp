@@ -82,9 +82,9 @@ static set<int> createSetWithBorders(int* borders)
     return numbSet;
 }
 
-int inpChoice(int& choice)
+ErrorsCode inpChoice(int& choice)
 {
-    int err;
+    ErrorsCode err;
     string choiceStr;
     err = SUCCESS;
     getline(cin, choiceStr);
@@ -101,7 +101,7 @@ int userChoice()
     cout << "Choose a way of input/output of data\n"
         << "1 -- Console\n"
         << "2 -- File\n";
-    int err;
+    ErrorsCode err;
     do
     {
         err = inpChoice(choice);
@@ -111,9 +111,9 @@ int userChoice()
     return choice;
 }
 
-int inpValidBorder(int& numb)
+ErrorsCode inpValidBorder(int& numb)
 {
-    int err;
+    ErrorsCode err;
     bool isCorrect;
     err = SUCCESS;
     isCorrect = true;
@@ -136,9 +136,9 @@ int inpValidBorder(int& numb)
     return err;
 }
 
-int inpValidBorders(int* borders)
+ErrorsCode inpValidBorders(int* borders)
 {
-    int err;
+    ErrorsCode err;
     err = inpValidBorder(borders[0]);
     if (err == SUCCESS)
     {
@@ -163,9 +163,9 @@ int* inputFromConsole()
     return borders;
 }
 
-int readOneFromFile(int& numb, ifstream& file)
+ErrorsCode readOneFromFile(int& numb, ifstream& file)
 {
-    int err;
+    ErrorsCode err;
     bool isCorrect;
     isCorrect = true;
     err = SUCCESS;
@@ -181,9 +181,9 @@ int readOneFromFile(int& numb, ifstream& file)
     return err;
 }
 
-int readFile(int* borders, string fileName)
+ErrorsCode readFile(int* borders, string fileName)
 {
-    int err = SUCCESS;
+    ErrorsCode err = SUCCESS;
     bool isCorrect = true;
     ifstream file(fileName);
     err = readOneFromFile(borders[0], file);
@@ -202,9 +202,9 @@ int readFile(int* borders, string fileName)
     return err;
 }
 
-int isFileExist(string nameOfFile)
+ErrorsCode isFileExist(string nameOfFile)
 {
-    int err;
+    ErrorsCode err;
     ifstream file(nameOfFile);
     err = file.is_open() ? SUCCESS : FILE_NOT_EXIST;
     file.close();
@@ -222,9 +222,9 @@ string getLastFourChar(string line)
     return lastFourChar;
 }
 
-int thisIsTxtFile(string& fileName)
+ErrorsCode thisIsTxtFile(string& fileName)
 {
-    int err = SUCCESS;
+    ErrorsCode err = SUCCESS;
     string lastFourChar;
     if (fileName.length() > 4)
     {

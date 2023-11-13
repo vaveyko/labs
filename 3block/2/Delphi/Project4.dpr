@@ -51,7 +51,7 @@ Var
     Numb: Byte;
 Begin
     SimpleSet := [];
-    for Numb in DefaultSet do
+    For Numb in DefaultSet do
         If IsNumbSimple(Numb) then
             Include(SimpleSet, Numb);
     GetSetOfSimple := SimpleSet;
