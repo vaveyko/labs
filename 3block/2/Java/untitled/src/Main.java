@@ -202,6 +202,7 @@ public class Main {
                     err = Codes.A_LOT_OF_DATA_FILE;
             }
         }
+        file.close();
         return err;
     }
 
