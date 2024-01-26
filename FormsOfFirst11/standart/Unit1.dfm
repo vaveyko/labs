@@ -29,29 +29,32 @@ object Form1: TForm1
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    PopupMenu = PopupMenu1
     Transparent = True
     WordWrap = True
   end
   object CheckButton: TButton
     Left = 8
-    Top = 244
+    Top = 188
     Width = 97
     Height = 34
     Caption = #1055#1088#1086#1074#1077#1088#1080#1090#1100
     Enabled = False
+    PopupMenu = PopupMenu1
     TabOrder = 0
   end
   object Edit1: TEdit
     Left = 8
     Top = 96
     Width = 153
-    Height = 114
+    Height = 33
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -80
+    Font.Height = -18
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    PopupMenu = PopupMenu1
     TabOrder = 1
     TextHint = 'N'
   end
@@ -63,11 +66,13 @@ object Form1: TForm1
       object N2: TMenuItem
         Caption = #1054#1090#1082#1088#1099#1090#1100
         ShortCut = 16463
+        OnClick = N2Click
       end
       object N4: TMenuItem
         Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
         Enabled = False
         ShortCut = 16467
+        OnClick = N4Click
       end
       object N3: TMenuItem
         Caption = '-'
@@ -94,11 +99,13 @@ object Form1: TForm1
   end
   object OpenTextFileDialog1: TOpenTextFileDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1077' '#1092#1072#1081#1083#1099' (*.txt)|*.txt'
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofOldStyleDialog, ofEnableSizing]
     Left = 381
     Top = 24
   end
   object SaveTextFileDialog1: TSaveTextFileDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1077' '#1092#1072#1081#1083#1099' (*.txt)|*.txt'
+    Options = [ofHideReadOnly, ofNoReadOnlyReturn, ofOldStyleDialog, ofEnableSizing]
     Left = 405
     Top = 24
   end

@@ -27,8 +27,8 @@ Type
         PopupMenu1: TPopupMenu;
         OpenTextFileDialog1: TOpenTextFileDialog;
         SaveTextFileDialog1: TSaveTextFileDialog;
-    N3: TMenuItem;
-    N7: TMenuItem;
+        N3: TMenuItem;
+        N7: TMenuItem;
         Procedure Button1Click(Sender: TObject);
         Procedure CheckEdit(Sender: TObject);
         Procedure Edit1KeyDown(Sender: TObject; Var Key: Word;
@@ -46,9 +46,9 @@ Type
         Procedure FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
         Procedure N2Click(Sender: TObject);
         Procedure N5Click(Sender: TObject);
-    procedure N6Click(Sender: TObject);
-    procedure N7Click(Sender: TObject);
-    procedure N4Click(Sender: TObject);
+        Procedure N6Click(Sender: TObject);
+        Procedure N7Click(Sender: TObject);
+        Procedure N4Click(Sender: TObject);
     Private
         { Private declarations }
     Public
@@ -57,7 +57,7 @@ Type
 
 Type
     ERRORS_CODE = (SUCCESS, INCORRECT_DATA_FILE, A_LOT_OF_DATA_FILE,
-                   OUT_OF_BORDER);
+      OUT_OF_BORDER);
 
 Const
     DIGITS = ['0' .. '9'];
@@ -66,9 +66,8 @@ Const
     MAX_NUMB = 999;
     MIN_NUMB = 1;
     ERRORS: Array [ERRORS_CODE] Of String = ('Successfull',
-                                        'Данные в файле не корректные',
-                                        'В файле должно быть только 3 числа',
-                                        'Числа должны быть в диапазоне [0, 999]');
+      'Данные в файле не корректные', 'В файле должно быть только 3 числа',
+      'Числа должны быть в диапазоне [0, 999]');
 
 Var
     Form1: TForm1;
@@ -125,7 +124,6 @@ Procedure TForm1.CheckEdit(Sender: TObject);
 Begin
     Edit4.Text := '';
     N4.Enabled := False;
-    IsSaved := True;
     If IsEditsNotEmpty(Edit1, Edit2, Edit3) Then
         Button1.Enabled := True
     Else
@@ -140,11 +138,10 @@ End;
 Procedure TForm1.Edit1KeyDown(Sender: TObject; Var Key: Word;
   Shift: TShiftState);
 Begin
-    If ((SsShift In Shift) Or (SsCtrl In Shift)) And ((Key = VK_RIGHT) Or (Key = VK_LEFT)) Then
-        Key := Key
-    Else if (SsShift In Shift) Or (SsCtrl In Shift) then
+    If ((SsShift In Shift) Or (SsCtrl In Shift)) And
+      Not((Key = VK_RIGHT) Or (Key = VK_LEFT)) Then
         Key := 0;
-    if Key = VK_DELETE then
+    If Key = VK_DELETE Then
         Key := 0;
     If (Key = VK_RIGHT) And (Edit1.SelStart = Length(Edit1.Text)) Then
         Edit2.SetFocus;
@@ -156,18 +153,20 @@ End;
 
 Procedure TForm1.Edit1KeyPress(Sender: TObject; Var Key: Char);
 Begin
-    if (Edit1.SelStart = 0) And (Key = '0') then
+    If (Edit1.SelStart = 0) And (Key = '0') Then
         Key := VOID;
     If Not((CharInSet(Key, DIGITS)) Or (Key = BACKSPACE)) Then
         Key := VOID;
-    if Edit1.SelLength = 0 then
+    If Edit1.SelLength = 0 Then
     Begin
-        if (Key = BACKSPACE) And (Edit1.SelStart = 1) And (Length(Edit1.Text) > 1) And (Edit1.Text[Edit1.SelStart+1] = '0') then
+        If (Key = BACKSPACE) And (Edit1.SelStart = 1) And
+          (Length(Edit1.Text) > 1) And
+          (Edit1.Text[Edit1.SelStart + 1] = '0') Then
             Key := VOID;
     End
-    Else
-        if (Length(Edit1.Text) > Edit1.SelLength) And (Edit1.Text[Edit1.SelLength+1] = '0') And (Key = BACKSPACE) then
-            Key := VOID;
+    Else If (Length(Edit1.Text) > Edit1.SelLength) And
+      (Edit1.Text[Edit1.SelLength + 1] = '0') And (Key = BACKSPACE) Then
+        Key := VOID;
 End;
 
 Procedure TForm1.Edit2Change(Sender: TObject);
@@ -178,11 +177,10 @@ End;
 Procedure TForm1.Edit2KeyDown(Sender: TObject; Var Key: Word;
   Shift: TShiftState);
 Begin
-    If ((SsShift In Shift) Or (SsCtrl In Shift)) And ((Key = VK_RIGHT) Or (Key = VK_LEFT)) Then
-        Key := Key
-    Else if (SsShift In Shift) Or (SsCtrl In Shift) then
+    If ((SsShift In Shift) Or (SsCtrl In Shift)) And
+      Not((Key = VK_RIGHT) Or (Key = VK_LEFT)) Then
         Key := 0;
-    if Key = VK_DELETE then
+    If Key = VK_DELETE Then
         Key := 0;
     If (Key = VK_LEFT) And (Edit2.SelStart = 0) Then
         Edit1.SetFocus;
@@ -194,18 +192,20 @@ End;
 
 Procedure TForm1.Edit2KeyPress(Sender: TObject; Var Key: Char);
 Begin
-    if (Edit2.SelStart = 0) And (Key = '0') then
+    If (Edit2.SelStart = 0) And (Key = '0') Then
         Key := VOID;
     If Not((CharInSet(Key, DIGITS)) Or (Key = BACKSPACE)) Then
         Key := VOID;
-    if Edit1.SelLength = 0 then
+    If Edit1.SelLength = 0 Then
     Begin
-        if (Key = BACKSPACE) And (Edit2.SelStart = 1) And (Length(Edit2.Text) > 1) And (Edit2.Text[Edit2.SelStart+1] = '0') then
+        If (Key = BACKSPACE) And (Edit2.SelStart = 1) And
+          (Length(Edit2.Text) > 1) And
+          (Edit2.Text[Edit2.SelStart + 1] = '0') Then
             Key := VOID;
     End
-    Else
-        if (Length(Edit2.Text) > Edit2.SelLength) And (Edit2.Text[Edit2.SelLength+1] = '0') And (Key = BACKSPACE) then
-            Key := VOID;
+    Else If (Length(Edit2.Text) > Edit2.SelLength) And
+      (Edit2.Text[Edit2.SelLength + 1] = '0') And (Key = BACKSPACE) Then
+        Key := VOID;
 End;
 
 Procedure TForm1.Edit3Change(Sender: TObject);
@@ -216,15 +216,16 @@ End;
 Procedure TForm1.Edit3KeyDown(Sender: TObject; Var Key: Word;
   Shift: TShiftState);
 Begin
-    If ((SsShift In Shift) Or (SsCtrl In Shift)) And ((Key = VK_RIGHT) Or (Key = VK_LEFT)) Then
-        Key := Key
-    Else if (SsShift In Shift) Or (SsCtrl In Shift) then
+    If ((SsShift In Shift) Or (SsCtrl In Shift)) And
+      Not((Key = VK_RIGHT) Or (Key = VK_LEFT)) Then
         Key := 0;
-    if Key = VK_DELETE then
+    If Key = VK_DELETE Then
         Key := 0;
-    If (Key = VK_RIGHT) And (Edit3.SelStart = Length(Edit3.Text)) then
+    If (Key = VK_RIGHT) And (Edit3.SelStart = Length(Edit3.Text)) Then
         Edit2.SetFocus;
-    if (Key = VK_LEFT) And (Edit3.SelStart = 0) then
+    If (Key = VK_LEFT) And (Edit3.SelStart = 0) Then
+        Edit1.SetFocus;
+    If (Key = VK_UP) Then
         Edit1.SetFocus;
     If (Key = VK_DOWN) And Button1.Enabled Then
         Button1.SetFocus;
@@ -234,32 +235,37 @@ End;
 
 Procedure TForm1.Edit3KeyPress(Sender: TObject; Var Key: Char);
 Begin
-    if (Edit3.SelStart = 0) And (Key = '0') then
+    If (Edit3.SelStart = 0) And (Key = '0') Then
         Key := VOID;
     If Not((CharInSet(Key, DIGITS)) Or (Key = BACKSPACE)) Then
         Key := VOID;
-    if Edit1.SelLength = 0 then
+    If Edit1.SelLength = 0 Then
     Begin
-        if (Key = BACKSPACE) And (Edit3.SelStart = 1) And (Length(Edit3.Text) > 1) And (Edit3.Text[Edit3.SelStart+1] = '0') then
+        If (Key = BACKSPACE) And (Edit3.SelStart = 1) And
+          (Length(Edit3.Text) > 1) And
+          (Edit3.Text[Edit3.SelStart + 1] = '0') Then
             Key := VOID;
     End
-    Else
-        if (Length(Edit3.Text) > Edit3.SelLength) And (Edit3.Text[Edit3.SelLength+1] = '0') And (Key = BACKSPACE) then
-            Key := VOID;
+    Else If (Length(Edit3.Text) > Edit3.SelLength) And
+      (Edit3.Text[Edit3.SelLength + 1] = '0') And (Key = BACKSPACE) Then
+        Key := VOID;
 End;
 
 Procedure TForm1.FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
 Begin
-    if N4.Enabled And Not IsSaved then
-        case Application.MessageBox('Сохранить данные перед выходом?', 'Выход', MB_YESNOCANCEL + MB_ICONQUESTION + MB_DEFBUTTON3) of
-            IDYES :
-            Begin
-                N4.Click;
+    If N4.Enabled And Not IsSaved Then
+        Case Application.MessageBox('Сохранить данные перед выходом?', 'Выход',
+          MB_YESNOCANCEL + MB_ICONQUESTION + MB_DEFBUTTON3) Of
+            IDYES:
+                Begin
+                    N4.Click;
+                    CanClose := True;
+                End;
+            IDNO:
                 CanClose := True;
-            End;
-            IDNO : CanClose := True;
-            IDCANCEL : CanClose := False;
-        end
+            IDCANCEL:
+                CanClose := False;
+        End
     Else
         Case Application.MessageBox('Вы точно хотите выйти?', 'Выход',
           MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2) Of
@@ -276,6 +282,7 @@ Var
     IsCorrect: Boolean;
     NumbInt: Integer;
 Begin
+    NumbInt := 0;
     Err := SUCCESS;
     IsCorrect := True;
     Try
@@ -284,7 +291,7 @@ Begin
         Err := INCORRECT_DATA_FILE;
         IsCorrect := False;
     End;
-    if IsCorrect then
+    If IsCorrect Then
         If (NumbInt > MAX_NUMB) Or (NumbInt < MIN_NUMB) Then
             Err := OUT_OF_BORDER
         Else
@@ -298,18 +305,19 @@ Var
     Size1, Size2, Size3: Integer;
     Err: ERRORS_CODE;
 Begin
+    Err := SUCCESS;
     If OpenTextFileDialog1.Execute() Then
     Begin
         AssignFile(InfFile, OpenTextFileDialog1.FileName);
         Reset(InfFile);
         Err := ReadOneFromFile(Size1, InfFile);
-        if Err = SUCCESS Then
+        If Err = SUCCESS Then
         Begin
             Err := ReadOneFromFile(Size2, InfFile);
-            if Err = SUCCESS then
+            If Err = SUCCESS Then
             Begin
                 Err := ReadOneFromFile(Size3, InfFile);
-                if Err = SUCCESS then
+                If Err = SUCCESS Then
                 Begin
                     If Not EoF(InfFile) Then
                         Err := A_LOT_OF_DATA_FILE;
@@ -317,34 +325,35 @@ Begin
             End;
 
         End;
+        If Err = SUCCESS Then
+        Begin
+            Edit1.Text := IntToStr(Size1);
+            Edit2.Text := IntToStr(Size2);
+            Edit3.Text := IntToStr(Size3);
+        End
+        Else
+        Begin
+            Application.MessageBox(PChar(ERRORS[Err]), 'Ошибочка вышла',
+              MB_OK + MB_ICONERROR);
+        End;
+        CloseFile(InfFile);
     End;
-    if Err = SUCCESS then
-    Begin
-        Edit1.Text := IntToStr(Size1);
-        Edit2.Text := IntToStr(Size2);
-        Edit3.Text := IntToStr(Size3);
-        Button1.Click;
-    End
-    Else
-    Begin
-        Application.MessageBox(PChar(ERRORS[Err]), 'Ошибочка вышла', MB_OK + MB_ICONERROR);
-    End;
-    CloseFile(InfFile);
 End;
 
-procedure TForm1.N4Click(Sender: TObject);
+Procedure TForm1.N4Click(Sender: TObject);
 Var
     OutFile: TextFile;
-begin
-    If SaveTextFileDialog1.Execute() then
+Begin
+    If SaveTextFileDialog1.Execute() Then
     Begin
         AssignFile(OutFile, SaveTextFileDialog1.FileName);
         Rewrite(OutFile);
+        Writeln(OutFile, 'Треугольник со сторонами: ' + Edit1.Text + ', ' + Edit2.Text + ', ' + Edit3.Text);
         Write(OutFile, Edit4.Text);
         CloseFile(OutFile);
         IsSaved := True;
     End;
-end;
+End;
 
 Procedure TForm1.N5Click(Sender: TObject);
 Var
@@ -355,18 +364,18 @@ Begin
     Form2.Free;
 End;
 
-procedure TForm1.N6Click(Sender: TObject);
+Procedure TForm1.N6Click(Sender: TObject);
 Var
     Form3: TForm3;
-begin
+Begin
     Form3 := TForm3.Create(Self);
     Form3.ShowModal;
     Form3.Free;
-end;
+End;
 
-procedure TForm1.N7Click(Sender: TObject);
-begin
+Procedure TForm1.N7Click(Sender: TObject);
+Begin
     Form1.Close;
-end;
+End;
 
 End.
