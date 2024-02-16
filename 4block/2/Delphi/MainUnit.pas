@@ -1,13 +1,12 @@
-Unit ManeUnit;
+Unit MainUnit;
 
 Interface
 
 Uses
-    Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-    System.Classes, Vcl.Graphics,
-    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtDlgs, Vcl.Menus, Vcl.StdCtrls,
-    ManualUnit, DevInfUnit, Vcl.Grids, Vcl.Buttons, Vcl.Mask, Vcl.ExtCtrls,
-    Vcl.DBCtrls;
+    Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Forms,
+    Vcl.ExtDlgs, Vcl.Menus, Vcl.StdCtrls, Vcl.Grids, Vcl.Dialogs, Vcl.Controls,
+    ManualUnit, DevInfUnit;
+
 
 Type
     TManeForm = Class(TForm)
@@ -70,7 +69,7 @@ Const
     MAX_SIZE = 5;
     MIN_SIZE = 1;
     ERRORS: Array [ERRORS_CODE] Of String = ('Successfull',
-      'Данные в файле не корректные',
+      'Данные в файле некорректные',
       'В файле неверное количество элементов или стоит лишний пробел',
       'Числа должны быть в диапазоне [-70, 70]',
       'Размер должен быть в диапазоне [1, 5]');
@@ -187,6 +186,7 @@ Procedure TManeForm.SizeEditChange(Sender: TObject);
 Begin
     DetEdit.Text := '';
     CheckButton.Enabled := False;
+    SaveButtonMenu.Enabled := False;
     If SizeEdit.Text = '' Then
     Begin
         MatrixLabel.Visible := False;
@@ -497,7 +497,10 @@ Begin
     Else
         CheckButton.Enabled := False;
     If Key <> VOID Then
+    Begin
         DetEdit.Text := '';
+        SaveButtonMenu.Enabled := False;
+    End;
 End;
 
 End.

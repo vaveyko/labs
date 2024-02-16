@@ -2,7 +2,7 @@ program Project4;
 
 uses
   Vcl.Forms,
-  ManeUnit in 'ManeUnit.pas' {ManeForm},
+  MainUnit in 'MainUnit.pas' {ManeForm},
   ManualUnit in 'ManualUnit.pas' {ManualForm},
   DevInfUnit in 'DevInfUnit.pas' {DeveloperForm};
 
