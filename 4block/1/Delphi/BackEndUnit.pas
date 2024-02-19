@@ -44,47 +44,72 @@ Const
 
 Implementation
 
+Function IsToyCorrect(Toy: RToy): Boolean;
+Begin
+    With Toy do
+    IsToyCorrect := (Length(Name) <= 21) And
+                    (Cost >= MIN_COST) And (Cost <= MAX_COST)
+                    And (Count >= MIN_COUNT) And (Count <= MAX_COUNT)
+                    And (MinAge < MaxAge) And (MinAge >= MIN_AGE)
+                    And (MaxAge <= MAX_AGE);
+End;
+
 Procedure DrawRecordOnGrid(Grid: TStringGrid; Path: String);
 Var
     CorrectionFile: TToyFile;
     RecCount, I: Integer;
     Toy: RToy;
+    IsFileIncorrect: Boolean;
 Begin
     OpenFile(Path, CorrectionFile, FmReset);
     RecCount := FileSize(CorrectionFile);
+    IsFileIncorrect := False;
     Grid.RowCount := RecCount + 1;
     For I := 1 To RecCount Do
     Begin
         Read(CorrectionFile, Toy);
-        Grid.Cells[0, I] := IntToStr(I) + '.';
-        With Toy Do
+        if IsToyCorrect(Toy) then
         Begin
-            Grid.Cells[1, I] := '"' + Name + '"';
-            Grid.Cells[2, I] := IntToStr(Cost);
-            Grid.Cells[3, I] := IntToStr(Count);
-            Grid.Cells[4, I] := IntToStr(MinAge) + '-' + IntToStr(MaxAge);
+            Grid.Cells[0, I] := IntToStr(I) + '.';
+            With Toy Do
+            Begin
+                Grid.Cells[1, I] := '"' + Name + '"';
+                Grid.Cells[2, I] := IntToStr(Cost);
+                Grid.Cells[3, I] := IntToStr(Count);
+                Grid.Cells[4, I] := IntToStr(MinAge) + '-' + IntToStr(MaxAge);
+            End;
+        End
+        Else
+        Begin
+            Grid.Cells[1, I] := 'ôàéë ñ äàííûìè áûë ïîâ';
+            Grid.Cells[2, I] := 'ðåæäåí,ïåðå';
+            Grid.Cells[3, I] := 'çàïóñòèòå';
+            Grid.Cells[4, I] := 'ïðîãó';
+            IsFileIncorrect := True;
         End;
     End;
     CloseFile(CorrectionFile);
+    if IsFileIncorrect then
+        DeleteFile(Path);
 End;
 
 Procedure DeleteRec(Index: Integer);
 Var
     CorrectionFile, BufferFile: TToyFile;
-  I: Integer;
-  Toy: RToy;
+    I: Integer;
+    Toy: RToy;
 Begin
-    OpenFile(ÑORRECTION_FILE_PATH, CorrectionFile, fmReset);
-    OpenFile(BUFFER_FILE_PATH, BufferFile, fmRewrite);
+    OpenFile(ÑORRECTION_FILE_PATH, CorrectionFile, FmReset);
+    OpenFile(BUFFER_FILE_PATH, BufferFile, FmRewrite);
 
-    for I := 0 to FileSize(CorrectionFile)-1 do
-        if I <> Index then
+    For I := 0 To FileSize(CorrectionFile) - 1 Do
+        If I <> Index Then
         Begin
             Read(CorrectionFile, Toy);
             Write(BufferFile, Toy);
         End
         Else
-            Seek(CorrectionFile, FilePos(CorrectionFile)+1);
+            Seek(CorrectionFile, FilePos(CorrectionFile) + 1);
     CloseFile(CorrectionFile);
     CloseFile(BufferFile);
     DeleteFile(ÑORRECTION_FILE_PATH);
@@ -134,7 +159,8 @@ Begin
     While Not EoF(FromFile) Do
     Begin
         Read(FromFile, Toy);
-        Write(ToFile, Toy);
+        if IsToyCorrect(Toy) then
+            Write(ToFile, Toy);
     End;
 End;
 
@@ -187,7 +213,7 @@ Var
     Buffer, Output: String;
 Begin
     Output := InsertKey(SelStart, Key, SelLength, Text);
-    If (Length(Output) <> 0) And (Output <> '-') And (Output <> '') Then
+    If (Length(Output) <> 0) And (Output <> '-') Then
     Begin
         Try
             ResultNum := StrToInt(Output);
@@ -202,7 +228,9 @@ Begin
             If (ResultNum > MAX) Or (ResultNum < MIN) Then
                 Key := VOID;
         End;
-    End;
+    End
+    Else If (Output = '-') And (MIN >= 0) Then
+        Key := VOID;
 End;
 
 End.

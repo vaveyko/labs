@@ -11,18 +11,14 @@ Type
     TFindRecForm = Class(TForm)
         RecordsGrid: TStringGrid;
         AgeCharacterLabel: TLabel;
-        DashLabel: TLabel;
         CostCharacterLabel: TLabel;
-        MinAgeEdit: TEdit;
-        MaxAgeEdit: TEdit;
+        AgeEdit: TEdit;
         RecCostEdit: TEdit;
         Procedure AgeEditKeyPress(Sender: TObject; Var Key: Char);
         Procedure RecCostEditKeyPress(Sender: TObject; Var Key: Char);
         Procedure RecCostEditKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
-        Procedure MinAgeEditKeyDown(Sender: TObject; Var Key: Word;
-          Shift: TShiftState);
-        Procedure MaxAgeEditKeyDown(Sender: TObject; Var Key: Word;
+        Procedure AgeEditKeyDown(Sender: TObject; Var Key: Word;
           Shift: TShiftState);
         Procedure FormCreate(Sender: TObject);
         Procedure AnyEditChange(Sender: TObject);
@@ -40,7 +36,6 @@ Implementation
 
 {$R *.dfm}
 
-
 Procedure TFindRecForm.AgeEditKeyPress(Sender: TObject; Var Key: Char);
 Begin
     With Sender As TEdit Do
@@ -50,11 +45,10 @@ End;
 Procedure TFindRecForm.WriteCorrectRecToFile(Path: String);
 Var
     CorrectionFile, BufferFile: TToyFile;
-    I, MinAge, MaxAge, MaxCost: Integer;
+    I, Age, MaxCost: Integer;
     Toy: RToy;
 Begin
-    MinAge := StrToInt(MinAgeEdit.Text);
-    MaxAge := StrToInt(MaxAgeEdit.Text);
+    Age := StrToInt(AgeEdit.Text);
     MaxCost := StrToInt(RecCostEdit.Text);
 
     OpenFile(ÑORRECTION_FILE_PATH, CorrectionFile, FmReset);
@@ -63,8 +57,7 @@ Begin
     For I := 1 To FileSize(CorrectionFile) Do
     Begin
         Read(CorrectionFile, Toy);
-        If (Toy.Cost <= MaxCost) And (Toy.MinAge <= MinAge) And
-          (Toy.MaxAge >= MaxAge) Then
+        If (Toy.Cost <= MaxCost) And (Toy.MinAge <= Age) Then
             Write(BufferFile, Toy);
     End;
 
@@ -87,42 +80,17 @@ Begin
 
 End;
 
-function TFindRecForm.IsAllFieldCorrect: Boolean;
+Function TFindRecForm.IsAllFieldCorrect: Boolean;
 Var
-    LBorder, RBorder: Integer;
-    IsAllFilled, IsCorrect: Boolean;
+    IsCorrect: Boolean;
 Begin
-    IsAllFilled := (RecCostEdit.Text <> '')
-                   And (MinAgeEdit.Text <> '')
-                   And (MaxAgeEdit.Text <> '');
-    If IsAllFilled Then
-    Begin
-        LBorder := StrToInt(MinAgeEdit.Text);
-        RBorder := StrToInt(MAxAgeEdit.Text);
-        IsCorrect := IsAllFilled And (LBorder < RBorder)
-    End
-    Else
-        IsCorrect := False;
+    IsCorrect := (RecCostEdit.Text <> '') And (AgeEdit.Text <> '');
     IsAllFieldCorrect := IsCorrect;
-end;
-
-Procedure TFindRecForm.MaxAgeEditKeyDown(Sender: TObject; Var Key: Word;
-  Shift: TShiftState);
-Begin
-    If ((SsShift In Shift) Or (SsCtrl In Shift)) And
-      Not((Key = VK_RIGHT) Or (Key = VK_LEFT)) Then
-        Key := 0;
-    If Key = VK_DELETE Then
-        Key := 0;
-    If (Key = VK_DOWN) Then
-        RecCostEdit.SetFocus();
-    If (Key = VK_RIGHT) Then
-        MinAgeEdit.SetFocus();
 End;
 
 Procedure TFindRecForm.AnyEditChange(Sender: TObject);
 Begin
-    if IsAllFieldCorrect() then
+    If IsAllFieldCorrect() Then
     Begin
         WriteCorrectRecToFile(BUFFER_FILE_PATH);
         DrawRecordOnGrid(RecordsGrid, BUFFER_FILE_PATH);
@@ -133,7 +101,7 @@ Begin
     DeleteFile(BUFFER_FILE_PATH);
 End;
 
-Procedure TFindRecForm.MinAgeEditKeyDown(Sender: TObject; Var Key: Word;
+Procedure TFindRecForm.AgeEditKeyDown(Sender: TObject; Var Key: Word;
   Shift: TShiftState);
 Begin
     If ((SsShift In Shift) Or (SsCtrl In Shift)) And
@@ -143,8 +111,6 @@ Begin
         Key := 0;
     If (Key = VK_DOWN) Then
         RecCostEdit.SetFocus();
-    If (Key = VK_RIGHT) Then
-        MaxAgeEdit.SetFocus();
 End;
 
 Procedure TFindRecForm.RecCostEditKeyDown(Sender: TObject; Var Key: Word;
@@ -156,7 +122,7 @@ Begin
     If Key = VK_DELETE Then
         Key := 0;
     If (Key = VK_UP) Then
-        MinAgeEdit.SetFocus();
+        AgeEdit.SetFocus();
 End;
 
 Procedure TFindRecForm.RecCostEditKeyPress(Sender: TObject; Var Key: Char);

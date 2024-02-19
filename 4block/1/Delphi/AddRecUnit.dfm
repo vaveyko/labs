@@ -1,6 +1,7 @@
 object AddRecForm: TAddRecForm
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
   Caption = #1044#1086#1073#1072#1074#1080#1090#1100
   ClientHeight = 254
   ClientWidth = 398

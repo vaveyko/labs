@@ -37,11 +37,13 @@ Type
         Procedure ChangeRecButtonClick(Sender: TObject);
         Procedure RecordsGridDblClick(Sender: TObject);
         Procedure DelRecButtonClick(Sender: TObject);
-    procedure RecordsGridSelectCell(Sender: TObject; ACol, ARow: Integer;
-      var CanSelect: Boolean);
-    procedure SearchRecButtonClick(Sender: TObject);
-    procedure RecordsGridKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+        Procedure RecordsGridSelectCell(Sender: TObject; ACol, ARow: Integer;
+          Var CanSelect: Boolean);
+        Procedure SearchRecButtonClick(Sender: TObject);
+        Procedure RecordsGridKeyDown(Sender: TObject; Var Key: Word;
+          Shift: TShiftState);
+    function FormHelp(Command: Word; Data: NativeInt;
+      var CallHelp: Boolean): Boolean;
     Private
         { Private declarations }
     Public
@@ -109,7 +111,7 @@ Begin
     CloseFile(StorageFile);
     CloseFile(CorrectionFile);
 
-    //Draw FixedRow information
+    // Draw FixedRow information
     RecordsGrid.Cells[0, 0] := '№';
     RecordsGrid.Cells[1, 0] := 'Название';
     RecordsGrid.Cells[2, 0] := 'Цена(BYN)';
@@ -118,6 +120,13 @@ Begin
 
     DrawRecordOnGrid(RecordsGrid, СORRECTION_FILE_PATH);
 End;
+
+function TManeForm.FormHelp(Command: Word; Data: NativeInt;
+  var CallHelp: Boolean): Boolean;
+begin
+    ManualButtonMenu.Click();
+    CallHelp := False;
+end;
 
 Procedure TManeForm.SaveButtonMenuClick(Sender: TObject);
 Var
@@ -133,13 +142,13 @@ Begin
     CloseFile(CorrectionFile);
 End;
 
-procedure TManeForm.SearchRecButtonClick(Sender: TObject);
-begin
+Procedure TManeForm.SearchRecButtonClick(Sender: TObject);
+Begin
     FindRecForm := TFindRecForm.Create(Self);
     FindRecForm.FormCreate(Self);
     FindRecForm.ShowModal();
     FindRecForm.Free();
-end;
+End;
 
 Procedure TManeForm.ManualButtonMenuClick(Sender: TObject);
 Begin
@@ -150,32 +159,32 @@ End;
 
 Procedure TManeForm.RecordsGridDblClick(Sender: TObject);
 Begin
-    if ChangeRecButton.Enabled then
+    If ChangeRecButton.Enabled Then
         ChangeRecButton.Click();
 End;
 
-procedure TManeForm.RecordsGridKeyDown(Sender: TObject; var Key: Word;
+Procedure TManeForm.RecordsGridKeyDown(Sender: TObject; Var Key: Word;
   Shift: TShiftState);
-begin
-    if (Key = VK_DELETE) And (DelRecButton.Enabled) then
+Begin
+    If (Key = VK_DELETE) And (DelRecButton.Enabled) Then
         DelRecButton.Click
-end;
+End;
 
-procedure TManeForm.RecordsGridSelectCell(Sender: TObject; ACol, ARow: Integer;
-  var CanSelect: Boolean);
-begin
-    if ARow = 0 then
+Procedure TManeForm.RecordsGridSelectCell(Sender: TObject; ACol, ARow: Integer;
+  Var CanSelect: Boolean);
+Begin
+    If ARow = 0 Then
     Begin
         DelRecButton.Enabled := False;
         ChangeRecButton.Enabled := False;
     End
     Else
     Begin
-        (Sender as TStringGrid).FixedRows := 1;
+        (Sender As TStringGrid).FixedRows := 1;
         ChangeRecButton.Enabled := True;
         DelRecButton.Enabled := True;
     End;
-end;
+End;
 
 Procedure TManeForm.AddRecButtonClick(Sender: TObject);
 Var
@@ -211,9 +220,9 @@ Var
     Choice: Integer;
 Begin
     CurRecIndex := RecordsGrid.Row - 1;
-    Choice := Application.MessageBox('Вы точно хотите удалить запись?', 'Внимание!',
-                                  MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2);
-    If (Choice = IDYES) then
+    Choice := Application.MessageBox('Вы точно хотите удалить запись?',
+      'Внимание!', MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2);
+    If (Choice = IDYES) Then
     Begin
         DeleteRec(CurRecIndex);
         DrawRecordOnGrid(RecordsGrid, СORRECTION_FILE_PATH);

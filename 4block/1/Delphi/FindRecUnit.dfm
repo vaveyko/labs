@@ -28,19 +28,6 @@ object FindRecForm: TFindRecForm
     Font.Style = []
     ParentFont = False
   end
-  object DashLabel: TLabel
-    Left = 160
-    Top = 24
-    Width = 19
-    Height = 21
-    Caption = '-'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -16
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-  end
   object CostCharacterLabel: TLabel
     Left = 32
     Top = 59
@@ -76,7 +63,7 @@ object FindRecForm: TFindRecForm
       99
       66)
   end
-  object MinAgeEdit: TEdit
+  object AgeEdit: TEdit
     Left = 115
     Top = 21
     Width = 39
@@ -90,24 +77,7 @@ object FindRecForm: TFindRecForm
     TabOrder = 1
     Text = '1'
     OnChange = AnyEditChange
-    OnKeyDown = MinAgeEditKeyDown
-    OnKeyPress = AgeEditKeyPress
-  end
-  object MaxAgeEdit: TEdit
-    Left = 177
-    Top = 21
-    Width = 39
-    Height = 29
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -16
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 2
-    Text = '120'
-    OnChange = AnyEditChange
-    OnKeyDown = MaxAgeEditKeyDown
+    OnKeyDown = AgeEditKeyDown
     OnKeyPress = AgeEditKeyPress
   end
   object RecCostEdit: TEdit
@@ -121,7 +91,7 @@ object FindRecForm: TFindRecForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 2
     Text = '3'
     OnChange = AnyEditChange
     OnKeyDown = RecCostEditKeyDown

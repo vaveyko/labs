@@ -4,8 +4,8 @@ object ManeForm: TManeForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1047#1072#1093#1074#1077#1081' 4_1'
-  ClientHeight = 367
-  ClientWidth = 548
+  ClientHeight = 402
+  ClientWidth = 577
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -2927,10 +2927,11 @@ object ManeForm: TManeForm
   Visible = True
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  OnHelp = FormHelp
   TextHeight = 15
   object Label1: TLabel
-    Left = 160
-    Top = 2
+    Left = 176
+    Top = 18
     Width = 214
     Height = 32
     Caption = #1050#1040#1058#1040#1051#1054#1043' '#1048#1043#1056#1059#1064#1045#1050
@@ -2942,8 +2943,8 @@ object ManeForm: TManeForm
     ParentFont = False
   end
   object RecordsGrid: TStringGrid
-    Left = 8
-    Top = 64
+    Left = 24
+    Top = 80
     Width = 532
     Height = 209
     DefaultColWidth = 80
@@ -2967,8 +2968,8 @@ object ManeForm: TManeForm
       66)
   end
   object AddRecButton: TButton
-    Left = 88
-    Top = 303
+    Left = 104
+    Top = 319
     Width = 75
     Height = 25
     Caption = #1076#1086#1073#1072#1074#1080#1090#1100
@@ -2982,8 +2983,8 @@ object ManeForm: TManeForm
     OnClick = AddRecButtonClick
   end
   object ChangeRecButton: TButton
-    Left = 184
-    Top = 303
+    Left = 200
+    Top = 319
     Width = 75
     Height = 25
     Caption = #1080#1079#1084#1077#1085#1080#1090#1100
@@ -2997,8 +2998,8 @@ object ManeForm: TManeForm
     OnClick = ChangeRecButtonClick
   end
   object DelRecButton: TButton
-    Left = 280
-    Top = 303
+    Left = 296
+    Top = 319
     Width = 75
     Height = 25
     Caption = #1091#1076#1072#1083#1080#1090#1100
@@ -3012,8 +3013,8 @@ object ManeForm: TManeForm
     OnClick = DelRecButtonClick
   end
   object SearchRecButton: TButton
-    Left = 376
-    Top = 303
+    Left = 392
+    Top = 319
     Width = 75
     Height = 25
     Caption = #1087#1086#1080#1089#1082
@@ -3027,7 +3028,8 @@ object ManeForm: TManeForm
     OnClick = SearchRecButtonClick
   end
   object MainMenu: TMainMenu
-    Left = 397
+    Left = 413
+    Top = 16
     object FileButtonMenu: TMenuItem
       Caption = #1060#1072#1081#1083
       object SaveButtonMenu: TMenuItem
@@ -3055,17 +3057,20 @@ object ManeForm: TManeForm
     end
   end
   object PopupMenu: TPopupMenu
-    Left = 421
+    Left = 437
+    Top = 16
   end
   object OpenTextFileDialog: TOpenTextFileDialog
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1077' '#1092#1072#1081#1083#1099' (*.txt)|*.txt'
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofOldStyleDialog, ofEnableSizing]
-    Left = 445
+    Left = 461
+    Top = 16
   end
   object SaveTextFileDialog: TSaveTextFileDialog
     DefaultExt = '.txt'
     Filter = #1058#1077#1082#1089#1090#1086#1074#1099#1077' '#1092#1072#1081#1083#1099' (*.txt)|*.txt'
     Options = [ofHideReadOnly, ofNoReadOnlyReturn, ofOldStyleDialog, ofEnableIncludeNotify, ofEnableSizing]
-    Left = 469
+    Left = 485
+    Top = 16
   end
 end
