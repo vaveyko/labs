@@ -359,6 +359,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
         Scanner input = new Scanner(System.in);
         printInf(input);
         copyFile(CORRECTION_FILE_PATH, STORAGE_FILE_PATH);
