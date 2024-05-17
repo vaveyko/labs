@@ -18,10 +18,8 @@ public class Main {
 
     }
 
-    static final int MAX_NUMB = 70,
-            MIN_NUMB = -70,
-            MIN_SIZE = 1,
-            MAX_SIZE = 5,
+    static final int MIN_SIZE = 3,
+            MAX_SIZE = 18,
             MIN_CHOICE = 1,
             MAX_CHOICE = 2;
 
@@ -75,28 +73,6 @@ public class Main {
         } while (err != ErrCode.SUCCESS);
         return sizeArr[0];
     }
-
-    static int[][] inputFromConsole(Scanner input) {
-        int size;
-        ErrCode err;
-        System.out.println("Enter size of matrix");
-        size = inputSizeConsole(input);
-        int[][] matrix = new int[size][size];
-        for (int i = 0; i < matrix.length; i++)
-            for (int j = 0; j < matrix[i].length; j++) {
-                int[] numArr = {0};
-                do {
-                    System.out.println("Enter element a[" + (i+1) + ", " + (j+1) + "]");
-                    err = readOneNum(input, numArr, MIN_NUMB, MAX_NUMB, false);
-                    if (err != ErrCode.SUCCESS)
-                        System.err.printf(ERRORS[err.ordinal()], MIN_NUMB, MAX_NUMB);
-                } while (err != ErrCode.SUCCESS);
-                matrix[i][j] = numArr[0];
-            }
-        return matrix;
-    }
-
-
 
     static ErrCode validateFileExistence(String fileName) {
         File file = new File(fileName);
@@ -154,7 +130,7 @@ public class Main {
         return err;
     }
 
-    static ErrCode readSize(int[] arrSize, Scanner file) {
+    static ErrCode readSizeFile(int[] arrSize, Scanner file) {
         ErrCode err;
         if (file.hasNext())
             err = readOneNum(file, arrSize, MIN_SIZE, MAX_SIZE, true);
@@ -172,11 +148,7 @@ public class Main {
             fileName = getFileName(input);
 
             try(Scanner file = new Scanner(Paths.get(fileName))) {
-                err = readSize(arrSize, file);
-                if (err.equals(ErrCode.SUCCESS)) {
-                    matrix = new int[arrSize[0]][arrSize[0]];
-                    err = readFile(matrix, file);
-                }
+                err = readSizeFile(arrSize, file);
             } catch (IOException e) {
                 err = ErrCode.IN_OUT_FILE_EXCEPTION;
             }
@@ -186,19 +158,19 @@ public class Main {
             }
         } while (err != ErrCode.SUCCESS);
 
-        return matrix;
+        return arrize;
     }
 
-    static int[][] inputInf(Scanner input) {
-        int[][] matrix;
+    static int inputInf(Scanner input) {
+        int size;
         int choice;
         choice = userChoice(input);
         if (choice == 1) {
-            matrix = inputFromConsole(input);
+            size = inputSizeConsole(input);
         } else {
-            matrix = inputFromFile(input);
+            size = inputFromFile(input);
         }
-        return matrix;
+        return size;
     }
 
     static int[][] deleteColRow(int[][] oldMatrix, int colInd, int rowInd) {
@@ -220,22 +192,6 @@ public class Main {
             }
         }
         return newMatrix;
-    }
-    static int calculateDet(int[][] matrix) {
-        int det = 0;
-        if (matrix.length == 1)
-            det = matrix[0][0];
-        else {
-            for (int i = 0; i < matrix.length; i++) {
-                if (matrix[0][i] != 0) {
-                    int[][] newMatrix = deleteColRow(matrix, i, 0);
-                    int addition = matrix[0][i] * calculateDet(newMatrix);
-                    addition = i % 2 == 0 ? addition : -addition;
-                    det += addition;
-                }
-            }
-        }
-        return det;
     }
 
     static void outputToConsole(int det, int[][] matrix) {
@@ -282,15 +238,71 @@ public class Main {
         System.out.println("Size of matrix is from 1 to 5 and element from -70 to 70");
     }
 
+    static int[][] calcSquare(int size) {
+        int[][] square = new int[size][size];
+
+        int n2 = size / 2;
+
+        // Построение четырех квадратов порядка size / 2
+        for (int i = 0, j = (n2 - 1) / 2, number = 1; number <= n2 * n2; number++, j++, i--) {
+            if (i < 0)
+                i += n2;
+            if (i >= n2)
+                i -= n2;
+            if (j >= n2)
+                j -= n2;
+            if (j < 0)
+                j += n2;
+
+            square[i][j] = number;
+            square[i + n2][j + n2] = number + n2 * n2;
+            square[i][j + n2] = number + 2 * n2 * n2;
+            square[i + n2][j] = number + 3 * n2 * n2;
+
+            if (number % n2 == 0) {
+                i++;
+                j--; // for iteration
+                i++;
+            }
+        }
+
+        // Меняем местами ломанные
+        int temp = square[0][0];
+        square[0][0] = square[n2][0];
+        square[n2][0] = temp;
+
+        temp = square[n2 - 1][0];
+        square[n2 - 1][0] = square[size - 1][0];
+        square[size - 1][0] = temp;
+
+        for (int i = 1, j = 1; i < n2 - 1; i++) {
+            temp = square[i][j];
+            square[i][j] = square[i + n2][j];
+            square[i + n2][j] = temp;
+        }
+
+        // Свап столбцов
+        int numOfColumnsToSwap = n2 - ((n2 - 3) / 2);
+        for (int j = numOfColumnsToSwap; j < n2 + (n2 - 3) / 2; j++) {
+            for (int i = 0; i < n2; i++) {
+                temp = square[i][j];
+                square[i][j] = square[i + n2][j];
+                square[i + n2][j] = temp;
+            }
+        }
+
+        return square;
+    }
+
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        int[][] matrix;
-        int det;
+        int size;
+        int[][] square;
 
         printInf();
-        matrix = inputInf(input);
-        det = calculateDet(matrix);
-        outputInf(det, matrix, input);
+        size = inputInf(input);
+        square = calcSquare(size);
+        outputInf(square, size, input);
 
         input.close();
     }

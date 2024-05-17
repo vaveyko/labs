@@ -44,7 +44,7 @@ Begin
             LineTo(Center, CurLayer + NODE_SIZE Div 2);
 
             // set some settings
-            if Node^.Data = Num then
+            If Node^.Data = Num Then
                 Canvas.Brush.Color := ClRed
             Else
                 Canvas.Brush.Color := ClWhite;
